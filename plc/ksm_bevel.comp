@@ -1,0 +1,207 @@
+component ksm_bevel "KSM bevel";
+
+author "Sascha Ittner";
+license "GPL";
+
+param rw float home = 0.0;
+param rw float home_velo = 0.0;
+param rw float calib_velo = 0.0;
+param rw float calib_min = 0.0;
+param rw float calib_max = 0.0;
+param rw float max_velo = 0.0;
+param rw float onpos_window = 5.0;
+param rw float ferror_window = 1.0;
+param rw float offset_cyl_dist = 0.0;
+param rw float offset_cyl_thold = 0.0;
+
+pin in bit ctrl_voltage;
+pin in bit automatic_running;
+pin in bit has_material;
+
+pin in bit amp_ena;
+pin in bit amp_ready;
+pin in bit amp_fault;
+
+pin in bit active_pos;
+pin in bit active_mot;
+
+pin io float reference;
+pin in float height;
+pin in float width;
+pin in float width_offset;
+
+pin in bit calib_start;
+pin in bit calib_cancel;
+pin out u32 calib_step;
+pin io bit calib_interlock;
+pin io bit calib_matprep;
+pin in bit calib_matprep_ok;
+pin in bit calib_btn_inc;
+pin in bit calib_btn_dec;
+pin in bit calib_btn_ok;
+
+pin out float lim_velo;
+pin out bit lim_load;
+
+pin out float pos_out;
+pin in float pos_cmd;
+pin in float pos_fb;
+
+pin out bit on_pos;
+pin out bit ferror;
+
+pin out bit error;
+
+pin out bit offset_cyl_out;
+pin out bit mot_out;
+
+variable int calib_start_old;
+variable double calib_pos;
+variable double calib_touch;
+variable int64_t calib_timer;
+variable int offset_selected;
+
+function _ fp;
+
+;;
+
+#include "rtapi_math.h"
+
+#define CALIB_STEP_NONE		0
+#define CALIB_STEP_START	1
+#define CALIB_STEP_MATPREP	2
+#define CALIB_STEP_TOUCH	3
+
+#define CALIB_TIMEOUT		30000000000LL
+
+
+FUNCTION(_) {
+  double tmp;
+  double height_int;
+  int calib_step_old, calib_start_edge;
+
+  // handle offset cylinder
+  height_int = height;
+  if (offset_cyl_thold > 0.0 && (active_pos || active_mot) && (calib_step != CALIB_STEP_NONE || automatic_running)) {
+    if (!offset_selected) {
+      offset_cyl_out = (height < offset_cyl_thold);
+    }
+    offset_selected = 1;
+  } else {
+    offset_cyl_out = 0;
+    offset_selected = 0;
+  } 
+
+  if (offset_cyl_out) {
+    height_int -= offset_cyl_dist;
+  }
+
+  // calib state machine
+  calib_start_edge = !calib_start_old && calib_start;
+  calib_start_old = calib_start;
+  calib_step_old = calib_step;
+  switch (calib_step) {
+    case CALIB_STEP_START:
+      if (calib_start_edge) {
+        calib_step = CALIB_STEP_MATPREP;
+        calib_matprep = 1;
+      }
+      break;
+
+    case CALIB_STEP_MATPREP:
+      if (has_material) {
+        calib_timer = CALIB_TIMEOUT;
+      }
+      if (calib_matprep_ok) {
+        calib_touch = height_int * M_SQRT1_2;
+        calib_step = CALIB_STEP_TOUCH;
+        calib_matprep = 0;
+      }
+      break;
+
+    case CALIB_STEP_TOUCH:
+      tmp = calib_velo * fperiod;
+      if (calib_btn_inc) {
+        calib_pos += tmp;
+        if (calib_pos > calib_max) {
+          calib_pos = calib_max;
+        }
+        calib_timer = CALIB_TIMEOUT;
+      }
+      if (calib_btn_dec) {
+        calib_pos -= tmp;
+        if (calib_pos < calib_min) {
+          calib_pos = calib_min;
+        }
+        calib_timer = CALIB_TIMEOUT;
+      }
+      if (calib_start_edge || calib_btn_ok) {
+        reference = calib_pos - calib_touch;
+        calib_step = CALIB_STEP_NONE;
+      }
+      break;
+
+    default:
+      calib_step = CALIB_STEP_NONE;
+      calib_timer = 0;
+      if (!calib_interlock && calib_start_edge) {
+        calib_pos = 0;
+        calib_step = CALIB_STEP_START;
+      }
+  }
+
+  // check timeout
+  if (calib_timer > 0) {
+    calib_timer -= period;
+    if (calib_timer <= 0) {
+      calib_step = CALIB_STEP_NONE;
+    }
+  }
+  if (calib_step_old != calib_step) {
+    calib_timer = CALIB_TIMEOUT;
+  }
+
+  // reset on lost control voltage or automatic mode
+  if (!ctrl_voltage || automatic_running || calib_cancel) {
+    calib_step = CALIB_STEP_NONE;
+  }
+
+  // set/reset interlock on activation trasitions
+  if (calib_step_old == CALIB_STEP_NONE && calib_step != CALIB_STEP_NONE) {
+    calib_interlock = 1;
+  }
+  if (calib_step_old != CALIB_STEP_NONE && calib_step == CALIB_STEP_NONE) {
+    calib_matprep = 0;
+    calib_interlock = 0;
+  }
+
+  // mux position and motor enable
+  lim_load = !amp_ena;
+  mot_out = active_mot;
+  if (lim_load) {
+    lim_velo = home_velo;
+    pos_out = pos_fb;
+  } else if (calib_step == CALIB_STEP_TOUCH) {
+    lim_velo = home_velo;
+    pos_out = calib_pos;
+    mot_out = 1;
+  } else if (automatic_running) {
+    lim_velo = max_velo;
+    if (active_mot) {
+      pos_out = reference - ((width + width_offset) * 0.5) + (height_int * M_SQRT1_2);
+    } else {
+      pos_out = 0;
+      mot_out = 0;
+    }
+  } else {
+    lim_velo = home_velo;
+    pos_out = 0;
+  }
+
+  tmp = fabs(pos_cmd - pos_fb);
+  on_pos = (tmp <= onpos_window);
+  ferror = (tmp > ferror_window);
+
+  error = ferror || amp_fault || (amp_ena && !amp_ready);
+}
+

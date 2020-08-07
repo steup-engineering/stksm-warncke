@@ -1,0 +1,646 @@
+###########################################################
+#
+# STEUP KSM
+#
+# PLC HAL
+#
+###########################################################
+
+###########################################################
+# main plc
+###########################################################
+
+setp ksm-main.idle-timeout	[KSM]IDLE_TIMEOUT
+setp ksm-main.ec-slaves		16
+
+setp ksm-main.water-press-ok	1
+setp ksm-main.door-interlock	1
+
+net ec-slaves-responding	=> ksm-main.ec-slaves-responding 
+net ec-all-op			=> ksm-main.ec-all-op 
+net air-press-ok		=> ksm-main.air-press-ok
+net automatic-running		<= ksm-main.automatic-running
+net belt-error			=> ksm-main.belt-error
+net belt-start-int		=> ksm-main.belt-start
+net belt-stop			=> ksm-main.belt-stop
+net ctrl-voltage		=> ksm-main.ctrl-voltage
+net ctrl-voltage-lamp		<= ksm-main.ctrl-voltage-lamp
+net no-error			<= ksm-main.no-error
+net error-lamp			<= ksm-main.error-lamp
+net error-mask			<= ksm-main.error-mask
+net has-material		=> ksm-main.has-material
+net motor-protection-ok		=> ksm-main.motor-prot-ok
+net plc-run			<= ksm-main.plc-run
+net reset-error			=> ksm-main.reset-error
+net water-on			<= ksm-main.water-on
+net calib-interlock		=> ksm-main.calib-interlock
+net bevel-amps-ena		=> ksm-main.bevel-amps-ena
+net unidevs-0-error		=> ksm-main.unidev-error
+net bevel-0-error		=> ksm-main.bevel-lower-error
+net bevel-1-error		=> ksm-main.bevel-upper-error
+net cleaners-0-error		=> ksm-main.cleaner-0-error
+
+###########################################################
+# inlet
+###########################################################
+
+net ctrl-voltage		=> inlet.ctrl-voltage
+net no-error			=> inlet.no-error
+
+net inlet-roll-up		=> inlet.btn-up
+net inlet-roll-down		=> inlet.btn-down
+
+net inlet-roll-at-top		=> inlet.sw-lim-up
+net inlet-roll-at-bot		=> inlet.sw-lim-down
+
+net inlet-up			<= inlet.out-up
+net inlet-down			<= inlet.out-down
+
+net inlet-roll-ack		=> inlet.btn-ack
+net inlet-roll-lamp		<= inlet.ack-req-lamp
+net belt-start			=> inlet.belt-start-in
+net belt-start-int		<= inlet.belt-start-out
+net automatic-running		=> inlet.automatic-running
+
+###########################################################
+# belt control with FIFO
+###########################################################
+
+setp ksm-belt.max-speed		[BELT]MAX_SPEED
+setp ksm-belt.mm-per-inc	[BELT]MM_PER_INC
+setp ksm-belt.speed-dt		[BELT]SPEED_DT
+setp ksm-belt.speed-ovr-max	[BELT]SPEED_OVR_MAX
+setp ksm-belt.speed-ovr-min	[BELT]SPEED_OVR_MIN
+setp ksm-belt.speed-matprep	[BELT]MAX_SPEED
+
+# selected height is initialized with 1
+# read height is always measured
+setp ksm-belt.selected-height	1.0
+
+# fifo 0 for rolls is alwasy enabled
+# fifo 1 only in automatic mode 
+setp ksm-belt.fi-0.enabled	1
+
+net automatic-running		=> ksm-belt.automatic-running
+net amp-enable			<= ksm-belt.amp-enable
+net amp-ready			=> ksm-belt.amp-ready
+net amp-speed-cmd		<= ksm-belt.amp-speed
+net no-error			=> ksm-belt.ena-stations-out
+net enc-belt			=> ksm-belt.enc-pos
+net belt-error			<= ksm-belt.error
+net has-material		<= ksm-belt.has-material
+net mat-switch-top		=> ksm-belt.fi-0.material-switch
+net mat-switch-side		=> ksm-belt.fi-1.material-switch
+net automatic-running	=> ksm-belt.fi-1.enabled
+net reset-error			=> ksm-belt.reset-error
+net belt-speed-cmd		=> ksm-belt.speed-cmd
+net belt-speed-ovr		<= ksm-belt.speed-ovr
+net belt-speed-fb		<= ksm-belt.speed
+net speed-dec			=> ksm-belt.speed-dec
+net speed-inc			=> ksm-belt.speed-inc
+net mat-switch-side		=> ksm-belt.whm-matswitch
+net main-pers-whm-secs	<= ksm-belt.whm-secs
+net main-pers-whm-dcms	<= ksm-belt.whm-dcms
+net main-pers-whm-mdcm	<= ksm-belt.whm-mdcm
+net main-whm-job-reset  => ksm-belt.whm-job-reset
+net main-pers-whm-job-secs	<= ksm-belt.whm-job-secs
+net main-pers-whm-job-dcms	<= ksm-belt.whm-job-dcms
+net main-pers-whm-job-mdcm	<= ksm-belt.whm-job-mdcm
+net calib-interlock		=> ksm-belt.calib-interlock
+net calib-matprep		=> ksm-belt.calib-matprep
+
+###########################################################
+# speed controller
+###########################################################
+
+setp belt-pid.Igain 0.8
+net amp-enable => belt-pid.enable
+net amp-speed-cmd => belt-pid.command
+net belt-speed-fb => belt-pid.feedback
+net amp-speed <= belt-pid.output
+
+###########################################################
+# rolls
+###########################################################
+
+setp ksm-belt.fi-0.st-0.enabled true
+net roll-0-pers-pos => ksm-belt.fi-0.st-0.position
+net roll-0-pers-on => ksm-belt.fi-0.st-0.on-offset
+net roll-0-pers-off => ksm-belt.fi-0.st-0.off-offset
+net rolls-0-manu => ksm-belt.fi-0.st-0.manu
+net rolls-0-active <= ksm-belt.fi-0.st-0.out
+
+setp ksm-belt.fi-0.st-1.enabled true
+net roll-1-pers-pos => ksm-belt.fi-0.st-1.position
+net roll-1-pers-on => ksm-belt.fi-0.st-1.on-offset
+net roll-1-pers-off => ksm-belt.fi-0.st-1.off-offset
+net rolls-1-manu => ksm-belt.fi-0.st-1.manu
+net rolls-1-active <= ksm-belt.fi-0.st-1.out
+
+# material probe is done on station 1
+# offset between fifo0 and fifo1 switch is very small (< 100mm)
+# so we don't need an additional offset for the probe position
+net roll-1-pers-pos => ksm-belt.fi-0.probe-position
+net roll-1-pers-pos => ksm-belt.fi-1.probe-position
+net matprobe-reset <= ksm-belt.fi-0.st-1.out-inv
+
+setp ksm-belt.fi-0.st-2.enabled true
+net roll-2-pers-pos => ksm-belt.fi-0.st-2.position
+net roll-2-pers-on => ksm-belt.fi-0.st-2.on-offset
+net roll-2-pers-off => ksm-belt.fi-0.st-2.off-offset
+net rolls-2-manu => ksm-belt.fi-0.st-2.manu
+net rolls-2-active <= ksm-belt.fi-0.st-2.out
+
+setp ksm-belt.fi-0.st-3.enabled true
+net roll-3-pers-pos => ksm-belt.fi-0.st-3.position
+net roll-3-pers-on => ksm-belt.fi-0.st-3.on-offset
+net roll-3-pers-off => ksm-belt.fi-0.st-3.off-offset
+net rolls-3-manu => ksm-belt.fi-0.st-3.manu
+net rolls-3-active <= ksm-belt.fi-0.st-3.out
+
+setp ksm-belt.fi-0.st-4.enabled true
+net roll-4-pers-pos => ksm-belt.fi-0.st-4.position
+net roll-4-pers-on => ksm-belt.fi-0.st-4.on-offset
+net roll-4-pers-off => ksm-belt.fi-0.st-4.off-offset
+net rolls-4-manu => ksm-belt.fi-0.st-4.manu
+net rolls-4-active <= ksm-belt.fi-0.st-4.out
+
+setp ksm-belt.fi-0.st-5.enabled true
+net roll-5-pers-pos => ksm-belt.fi-0.st-5.position
+net roll-5-pers-on => ksm-belt.fi-0.st-5.on-offset
+net roll-5-pers-off => ksm-belt.fi-0.st-5.off-offset
+net rolls-5-manu => ksm-belt.fi-0.st-5.manu
+net rolls-5-active <= ksm-belt.fi-0.st-5.out
+
+setp ksm-belt.fi-0.st-6.enabled true
+net roll-6-pers-pos => ksm-belt.fi-0.st-6.position
+net roll-6-pers-on => ksm-belt.fi-0.st-6.on-offset
+net roll-6-pers-off => ksm-belt.fi-0.st-6.off-offset
+net rolls-6-manu => ksm-belt.fi-0.st-6.manu
+net rolls-6-active <= ksm-belt.fi-0.st-6.out
+
+setp ksm-belt.fi-0.st-7.enabled true
+net roll-7-pers-pos => ksm-belt.fi-0.st-7.position
+net roll-7-pers-on => ksm-belt.fi-0.st-7.on-offset
+net roll-7-pers-off => ksm-belt.fi-0.st-7.off-offset
+net rolls-7-manu => ksm-belt.fi-0.st-7.manu
+net rolls-7-active <= ksm-belt.fi-0.st-7.out
+
+setp ksm-belt.fi-0.st-8.enabled true
+net roll-8-pers-pos => ksm-belt.fi-0.st-8.position
+net roll-8-pers-on => ksm-belt.fi-0.st-8.on-offset
+net roll-8-pers-off => ksm-belt.fi-0.st-8.off-offset
+net rolls-8-manu => ksm-belt.fi-0.st-8.manu
+net rolls-8-active <= ksm-belt.fi-0.st-8.out
+
+setp ksm-belt.fi-0.st-9.enabled true
+net roll-9-pers-pos => ksm-belt.fi-0.st-9.position
+net roll-9-pers-on => ksm-belt.fi-0.st-9.on-offset
+net roll-9-pers-off => ksm-belt.fi-0.st-9.off-offset
+net rolls-9-manu => ksm-belt.fi-0.st-9.manu
+net rolls-9-active <= ksm-belt.fi-0.st-9.out
+
+setp ksm-belt.fi-0.st-10.enabled true
+net roll-10-pers-pos => ksm-belt.fi-0.st-10.position
+net roll-10-pers-on => ksm-belt.fi-0.st-10.on-offset
+net roll-10-pers-off => ksm-belt.fi-0.st-10.off-offset
+net rolls-10-manu => ksm-belt.fi-0.st-10.manu
+net rolls-10-active <= ksm-belt.fi-0.st-10.out
+
+setp ksm-belt.fi-0.st-11.enabled true
+net roll-11-pers-pos => ksm-belt.fi-0.st-11.position
+net roll-11-pers-on => ksm-belt.fi-0.st-11.on-offset
+net roll-11-pers-off => ksm-belt.fi-0.st-11.off-offset
+net rolls-11-manu => ksm-belt.fi-0.st-11.manu
+net rolls-11-active <= ksm-belt.fi-0.st-11.out
+
+setp ksm-belt.fi-0.st-12.enabled true
+net roll-12-pers-pos => ksm-belt.fi-0.st-12.position
+net roll-12-pers-on => ksm-belt.fi-0.st-12.on-offset
+net roll-12-pers-off => ksm-belt.fi-0.st-12.off-offset
+net rolls-12-manu => ksm-belt.fi-0.st-12.manu
+net rolls-12-active <= ksm-belt.fi-0.st-12.out
+
+setp ksm-belt.fi-0.st-13.enabled true
+net roll-13-pers-pos => ksm-belt.fi-0.st-13.position
+net roll-13-pers-on => ksm-belt.fi-0.st-13.on-offset
+net roll-13-pers-off => ksm-belt.fi-0.st-13.off-offset
+net rolls-13-manu => ksm-belt.fi-0.st-13.manu
+net rolls-13-active <= ksm-belt.fi-0.st-13.out
+
+setp ksm-belt.fi-0.st-14.enabled true
+net roll-14-pers-pos => ksm-belt.fi-0.st-14.position
+net roll-14-pers-on => ksm-belt.fi-0.st-14.on-offset
+net roll-14-pers-off => ksm-belt.fi-0.st-14.off-offset
+net rolls-14-manu => ksm-belt.fi-0.st-14.manu
+net rolls-14-active <= ksm-belt.fi-0.st-14.out
+
+setp ksm-belt.fi-0.st-15.enabled true
+net roll-15-pers-pos => ksm-belt.fi-0.st-15.position
+net roll-15-pers-on => ksm-belt.fi-0.st-15.on-offset
+net roll-15-pers-off => ksm-belt.fi-0.st-15.off-offset
+net rolls-15-manu => ksm-belt.fi-0.st-15.manu
+net rolls-15-active <= ksm-belt.fi-0.st-15.out
+
+setp ksm-belt.fi-0.st-16.enabled true
+net roll-16-pers-pos => ksm-belt.fi-0.st-16.position
+net roll-16-pers-on => ksm-belt.fi-0.st-16.on-offset
+net roll-16-pers-off => ksm-belt.fi-0.st-16.off-offset
+net rolls-16-manu => ksm-belt.fi-0.st-16.manu
+net rolls-16-active <= ksm-belt.fi-0.st-16.out
+
+setp ksm-belt.fi-0.st-17.enabled true
+net roll-17-pers-pos => ksm-belt.fi-0.st-17.position
+net roll-17-pers-on => ksm-belt.fi-0.st-17.on-offset
+net roll-17-pers-off => ksm-belt.fi-0.st-17.off-offset
+net rolls-17-manu => ksm-belt.fi-0.st-17.manu
+net rolls-17-active <= ksm-belt.fi-0.st-17.out
+
+setp ksm-belt.fi-0.st-18.enabled true
+net roll-18-pers-pos => ksm-belt.fi-0.st-18.position
+net roll-18-pers-on => ksm-belt.fi-0.st-18.on-offset
+net roll-18-pers-off => ksm-belt.fi-0.st-18.off-offset
+net rolls-18-manu => ksm-belt.fi-0.st-18.manu
+net rolls-18-active <= ksm-belt.fi-0.st-18.out
+
+setp ksm-belt.fi-0.st-19.enabled true
+net roll-19-pers-pos => ksm-belt.fi-0.st-19.position
+net roll-19-pers-on => ksm-belt.fi-0.st-19.on-offset
+net roll-19-pers-off => ksm-belt.fi-0.st-19.off-offset
+net rolls-19-manu => ksm-belt.fi-0.st-19.manu
+net rolls-19-active <= ksm-belt.fi-0.st-19.out
+
+setp ksm-belt.fi-0.st-20.enabled true
+net roll-20-pers-pos => ksm-belt.fi-0.st-20.position
+net roll-20-pers-on => ksm-belt.fi-0.st-20.on-offset
+net roll-20-pers-off => ksm-belt.fi-0.st-20.off-offset
+net rolls-20-manu => ksm-belt.fi-0.st-20.manu
+net rolls-20-active <= ksm-belt.fi-0.st-20.out
+
+setp ksm-belt.fi-0.st-21.enabled true
+net roll-21-pers-pos => ksm-belt.fi-0.st-21.position
+net roll-21-pers-on => ksm-belt.fi-0.st-21.on-offset
+net roll-21-pers-off => ksm-belt.fi-0.st-21.off-offset
+net rolls-21-manu => ksm-belt.fi-0.st-21.manu
+net rolls-21-active <= ksm-belt.fi-0.st-21.out
+
+setp ksm-belt.fi-0.st-22.enabled true
+net roll-22-pers-pos => ksm-belt.fi-0.st-22.position
+net roll-22-pers-on => ksm-belt.fi-0.st-22.on-offset
+net roll-22-pers-off => ksm-belt.fi-0.st-22.off-offset
+net rolls-22-manu => ksm-belt.fi-0.st-22.manu
+net rolls-22-active <= ksm-belt.fi-0.st-22.out
+
+setp ksm-belt.fi-0.st-23.enabled true
+net roll-23-pers-pos => ksm-belt.fi-0.st-23.position
+net roll-23-pers-on => ksm-belt.fi-0.st-23.on-offset
+net roll-23-pers-off => ksm-belt.fi-0.st-23.off-offset
+net rolls-23-manu => ksm-belt.fi-0.st-23.manu
+net rolls-23-active <= ksm-belt.fi-0.st-23.out
+
+setp ksm-belt.fi-0.st-24.enabled true
+net roll-24-pers-pos => ksm-belt.fi-0.st-24.position
+net roll-24-pers-on => ksm-belt.fi-0.st-24.on-offset
+net roll-24-pers-off => ksm-belt.fi-0.st-24.off-offset
+net rolls-24-manu => ksm-belt.fi-0.st-24.manu
+net rolls-24-active <= ksm-belt.fi-0.st-24.out
+
+setp ksm-belt.fi-0.st-25.enabled true
+net roll-25-pers-pos => ksm-belt.fi-0.st-25.position
+net roll-25-pers-on => ksm-belt.fi-0.st-25.on-offset
+net roll-25-pers-off => ksm-belt.fi-0.st-25.off-offset
+net rolls-25-manu => ksm-belt.fi-0.st-25.manu
+net rolls-25-active <= ksm-belt.fi-0.st-25.out
+
+setp ksm-belt.fi-0.st-26.enabled true
+net roll-26-pers-pos => ksm-belt.fi-0.st-26.position
+net roll-26-pers-on => ksm-belt.fi-0.st-26.on-offset
+net roll-26-pers-off => ksm-belt.fi-0.st-26.off-offset
+net rolls-26-manu => ksm-belt.fi-0.st-26.manu
+net rolls-26-active <= ksm-belt.fi-0.st-26.out
+
+setp ksm-belt.fi-0.st-27.enabled true
+net roll-27-pers-pos => ksm-belt.fi-0.st-27.position
+net roll-27-pers-on => ksm-belt.fi-0.st-27.on-offset
+net roll-27-pers-off => ksm-belt.fi-0.st-27.off-offset
+net rolls-27-manu => ksm-belt.fi-0.st-27.manu
+net rolls-27-active <= ksm-belt.fi-0.st-27.out
+
+setp ksm-belt.fi-0.st-28.enabled true
+net roll-28-pers-pos => ksm-belt.fi-0.st-28.position
+net roll-28-pers-on => ksm-belt.fi-0.st-28.on-offset
+net roll-28-pers-off => ksm-belt.fi-0.st-28.off-offset
+net rolls-28-manu => ksm-belt.fi-0.st-28.manu
+net rolls-28-active <= ksm-belt.fi-0.st-28.out
+
+setp ksm-belt.fi-0.st-29.enabled true
+net roll-29-pers-pos => ksm-belt.fi-0.st-29.position
+net roll-29-pers-on => ksm-belt.fi-0.st-29.on-offset
+net roll-29-pers-off => ksm-belt.fi-0.st-29.off-offset
+net rolls-29-manu => ksm-belt.fi-0.st-29.manu
+net rolls-29-active <= ksm-belt.fi-0.st-29.out
+
+setp ksm-belt.fi-0.st-30.enabled true
+net roll-30-pers-pos => ksm-belt.fi-0.st-30.position
+net roll-30-pers-on => ksm-belt.fi-0.st-30.on-offset
+net roll-30-pers-off => ksm-belt.fi-0.st-30.off-offset
+net rolls-30-manu => ksm-belt.fi-0.st-30.manu
+net rolls-30-active <= ksm-belt.fi-0.st-30.out
+
+###########################################################
+# faces
+###########################################################
+
+setp ksm-belt.fi-1.st-0.force-fifo-en 1
+net faces-0-pers-pos => ksm-belt.fi-1.st-0.position
+net faces-0-pers-on => ksm-belt.fi-1.st-0.on-offset
+net faces-0-pers-off => ksm-belt.fi-1.st-0.off-offset
+net faces-0-pers-whm-secs => ksm-belt.fi-1.st-0.whm-secs
+net faces-0-ena => ksm-belt.fi-1.st-0.enabled
+net faces-0-manu => ksm-belt.fi-1.st-0.manu
+net faces-0-active <= ksm-belt.fi-1.st-0.out
+
+net faces-1-pers-pos => ksm-belt.fi-1.st-1.position
+net faces-1-pers-on => ksm-belt.fi-1.st-1.on-offset
+net faces-1-pers-off => ksm-belt.fi-1.st-1.off-offset
+net faces-1-pers-whm-secs => ksm-belt.fi-1.st-1.whm-secs
+net faces-1-ena => ksm-belt.fi-1.st-1.enabled
+net faces-1-manu => ksm-belt.fi-1.st-1.manu
+net faces-1-active <= ksm-belt.fi-1.st-1.out
+
+net faces-2-pers-pos => ksm-belt.fi-1.st-2.position
+net faces-2-pers-on => ksm-belt.fi-1.st-2.on-offset
+net faces-2-pers-off => ksm-belt.fi-1.st-2.off-offset
+net faces-2-pers-whm-secs => ksm-belt.fi-1.st-2.whm-secs
+net faces-2-ena => ksm-belt.fi-1.st-2.enabled
+net faces-2-manu => ksm-belt.fi-1.st-2.manu
+net faces-2-active <= ksm-belt.fi-1.st-2.out
+
+net faces-3-pers-pos => ksm-belt.fi-1.st-3.position
+net faces-3-pers-on => ksm-belt.fi-1.st-3.on-offset
+net faces-3-pers-off => ksm-belt.fi-1.st-3.off-offset
+net faces-3-pers-whm-secs => ksm-belt.fi-1.st-3.whm-secs
+net faces-3-ena => ksm-belt.fi-1.st-3.enabled
+net faces-3-manu => ksm-belt.fi-1.st-3.manu
+net faces-3-active <= ksm-belt.fi-1.st-3.out
+
+net faces-4-pers-pos => ksm-belt.fi-1.st-4.position
+net faces-4-pers-on => ksm-belt.fi-1.st-4.on-offset
+net faces-4-pers-off => ksm-belt.fi-1.st-4.off-offset
+net faces-4-pers-whm-secs => ksm-belt.fi-1.st-4.whm-secs
+net faces-4-ena => ksm-belt.fi-1.st-4.enabled
+net faces-4-manu => ksm-belt.fi-1.st-4.manu
+net faces-4-active <= ksm-belt.fi-1.st-4.out
+
+net faces-5-pers-pos => ksm-belt.fi-1.st-5.position
+net faces-5-pers-on => ksm-belt.fi-1.st-5.on-offset
+net faces-5-pers-off => ksm-belt.fi-1.st-5.off-offset
+net faces-5-pers-whm-secs => ksm-belt.fi-1.st-5.whm-secs
+net faces-5-ena => ksm-belt.fi-1.st-5.enabled
+net faces-5-manu => ksm-belt.fi-1.st-5.manu
+net faces-5-active <= ksm-belt.fi-1.st-5.out
+
+net faces-6-pers-pos => ksm-belt.fi-1.st-6.position
+net faces-6-pers-on => ksm-belt.fi-1.st-6.on-offset
+net faces-6-pers-off => ksm-belt.fi-1.st-6.off-offset
+net faces-6-pers-whm-secs => ksm-belt.fi-1.st-6.whm-secs
+net faces-6-ena => ksm-belt.fi-1.st-6.enabled
+net faces-6-manu => ksm-belt.fi-1.st-6.manu
+net faces-6-active <= ksm-belt.fi-1.st-6.out
+
+net faces-7-pers-pos => ksm-belt.fi-1.st-7.position
+net faces-7-pers-on => ksm-belt.fi-1.st-7.on-offset
+net faces-7-pers-off => ksm-belt.fi-1.st-7.off-offset
+net faces-7-pers-whm-secs => ksm-belt.fi-1.st-7.whm-secs
+net faces-7-ena => ksm-belt.fi-1.st-7.enabled
+net faces-7-manu => ksm-belt.fi-1.st-7.manu
+net faces-7-active <= ksm-belt.fi-1.st-7.out
+
+net faces-8-pers-pos => ksm-belt.fi-1.st-8.position
+net faces-8-pers-on => ksm-belt.fi-1.st-8.on-offset
+net faces-8-pers-off => ksm-belt.fi-1.st-8.off-offset
+net faces-8-pers--pers-whm-secs => ksm-belt.fi-1.st-8.whm-secs
+net faces-8-ena => ksm-belt.fi-1.st-8.enabled
+net faces-8-manu => ksm-belt.fi-1.st-8.manu
+net faces-8-active <= ksm-belt.fi-1.st-8.out
+
+net faces-9-pers-pos => ksm-belt.fi-1.st-9.position
+net faces-9-pers-on => ksm-belt.fi-1.st-9.on-offset
+net faces-9-pers-off => ksm-belt.fi-1.st-9.off-offset
+net faces-9-pers-whm-secs => ksm-belt.fi-1.st-9.whm-secs
+net faces-9-ena => ksm-belt.fi-1.st-9.enabled
+net faces-9-manu => ksm-belt.fi-1.st-9.manu
+net faces-9-active <= ksm-belt.fi-1.st-9.out
+
+###########################################################
+# cleaners
+###########################################################
+
+net ctrl-voltage		=> clean-0.ctrl-voltage
+net automatic-running		<= clean-0.automatic-running
+net cleaners-0-error		=> clean-0.error
+
+net cleaners-0-active		=> clean-0.active
+net cleaners-0-locked		=> clean-0.locked
+net cleaners-0-unlocked		=> clean-0.unlocked
+net cleaners-0-is-up		=> clean-0.is-up
+
+net cleaners-0-lock		<= clean-0.lock
+net cleaners-0-unlock		<= clean-0.unlock
+net cleaners-0-up		<= clean-0.up
+net cleaners-0-down		<= clean-0.down
+
+net cleaners-0-req-clean	=> clean-0.req-clean
+net cleaners-0-req-calib	=> clean-0.req-calib
+net cleaners-0-is-clean		<= clean-0.is-clean
+net cleaners-0-is-calib		<= clean-0.is-calib
+
+net cleaners-0-pers-pos => ksm-belt.fi-1.st-10.position
+net cleaners-0-pers-on => ksm-belt.fi-1.st-10.on-offset
+net cleaners-0-pers-off => ksm-belt.fi-1.st-10.off-offset
+net cleaners-0-pers-whm-secs => ksm-belt.fi-1.st-10.whm-secs
+net cleaners-0-ena => ksm-belt.fi-1.st-10.enabled
+net cleaners-0-manu => ksm-belt.fi-1.st-10.manu
+net cleaners-0-active <= ksm-belt.fi-1.st-10.out
+
+net cleaners-1-pers-pos => ksm-belt.fi-1.st-11.position
+net cleaners-1-pers-on => ksm-belt.fi-1.st-11.on-offset
+net cleaners-1-pers-off => ksm-belt.fi-1.st-11.off-offset
+net cleaners-1-pers-whm-secs => ksm-belt.fi-1.st-11.whm-secs
+net cleaners-1-ena => ksm-belt.fi-1.st-11.enabled
+net cleaners-1-manu => ksm-belt.fi-1.st-11.manu
+net cleaners-1-active <= ksm-belt.fi-1.st-11.out
+
+net cleaners-2-pers-pos => ksm-belt.fi-1.st-12.position
+net cleaners-2-pers-on => ksm-belt.fi-1.st-12.on-offset
+net cleaners-2-pers-off => ksm-belt.fi-1.st-12.off-offset
+net cleaners-2-pers-whm-secs => ksm-belt.fi-1.st-12.whm-secs
+net cleaners-2-ena => ksm-belt.fi-1.st-12.enabled
+net cleaners-2-manu => ksm-belt.fi-1.st-12.manu
+net cleaners-2-active <= ksm-belt.fi-1.st-12.out
+
+###########################################################
+# unidevs
+###########################################################
+
+net unidevs-0-pers-pos => ksm-belt.fi-1.st-13.position
+net unidevs-0-pers-on => ksm-belt.fi-1.st-13.on-offset
+net unidevs-0-pers-off => ksm-belt.fi-1.st-13.off-offset
+net unidevs-0-pers-whm-secs => ksm-belt.fi-1.st-13.whm-secs
+net unidevs-0-ena => ksm-belt.fi-1.st-13.enabled
+net unidevs-0-manu => ksm-belt.fi-1.st-13.manu
+net unidevs-0-req <= ksm-belt.fi-1.st-13.out
+net unidevs-0-height <= ksm-belt.fi-1.st-13.height
+net unidevs-0-marg-start => ksm-belt.fi-1.st-13.marg-start
+net unidevs-0-marg-end => ksm-belt.fi-1.st-13.marg-end
+
+setp unidev-0.pos-0 [UNIDEV_0]POS_0
+setp unidev-0.pos-1 [UNIDEV_0]POS_1
+setp unidev-0.pos-2 [UNIDEV_0]POS_2
+setp unidev-0.window [UNIDEV_0]WINDOW
+
+net unidevs-0-sw-0 => unidev-0.pos-sw-0
+net unidevs-0-sw-1 => unidev-0.pos-sw-1
+net unidevs-0-sw-2 => unidev-0.pos-sw-2
+net unidevs-0-cyl-0 <= unidev-0.pos-cyl-0
+net unidevs-0-cyl-1 <= unidev-0.pos-cyl-1
+net unidevs-0-cyl-2 <= unidev-0.pos-cyl-2
+
+net unidevs-0-height => unidev-0.height
+net unidevs-0-sel-pos <= unidev-0.selected
+net unidevs-0-error <= unidev-0.error
+net unidevs-0-req => unidev-0.in
+net unidevs-0-active <= unidev-0.out
+
+###########################################################
+# station control
+###########################################################
+
+net bevel-0-pers-mot-0-pos => ksm-belt.fi-1.st-14.position
+net bevel-0-pers-mot-0-on => ksm-belt.fi-1.st-14.on-offset
+net bevel-0-pers-mot-0-off => ksm-belt.fi-1.st-14.off-offset
+net bevel-0-pers-mot-0-whm-secs => ksm-belt.fi-1.st-14.whm-secs
+net bevel-0-mot-0-ena => ksm-belt.fi-1.st-14.enabled
+net bevel-0-mot-0-manu => ksm-belt.fi-1.st-14.manu
+net bevel-0-mot-0-req <= ksm-belt.fi-1.st-14.out
+net bevel-0-marg-start => ksm-belt.fi-1.st-14.marg-start
+net bevel-0-marg-end => ksm-belt.fi-1.st-14.marg-end
+net bevel-0-calib-matprep-ok <= ksm-belt.fi-1.st-14.activate-full
+
+net bevel-0-pers-mot-1-pos => ksm-belt.fi-1.st-15.position
+net bevel-0-pers-mot-1-on => ksm-belt.fi-1.st-15.on-offset
+net bevel-0-pers-mot-1-off => ksm-belt.fi-1.st-15.off-offset
+net bevel-0-pers-mot-1-whm-secs => ksm-belt.fi-1.st-15.whm-secs
+net bevel-0-mot-1-ena => ksm-belt.fi-1.st-15.enabled
+net bevel-0-mot-1-manu => ksm-belt.fi-1.st-15.manu
+net bevel-0-mot-1-active <= ksm-belt.fi-1.st-15.out
+net bevel-0-marg-start => ksm-belt.fi-1.st-15.marg-start
+net bevel-0-marg-end => ksm-belt.fi-1.st-15.marg-end
+
+net bevel-0-pers-mot-2-pos => ksm-belt.fi-1.st-16.position
+net bevel-0-pers-mot-2-on => ksm-belt.fi-1.st-16.on-offset
+net bevel-0-pers-mot-2-off => ksm-belt.fi-1.st-16.off-offset
+net bevel-0-pers-mot-2-whm-secs => ksm-belt.fi-1.st-16.whm-secs
+net bevel-0-mot-2-ena => ksm-belt.fi-1.st-16.enabled
+net bevel-0-mot-2-manu => ksm-belt.fi-1.st-16.manu
+net bevel-0-mot-2-active <= ksm-belt.fi-1.st-16.out
+net bevel-0-marg-start => ksm-belt.fi-1.st-16.marg-start
+net bevel-0-marg-end => ksm-belt.fi-1.st-16.marg-end
+
+net bevel-1-pers-mot-0-pos => ksm-belt.fi-1.st-17.position
+net bevel-1-pers-mot-0-on => ksm-belt.fi-1.st-17.on-offset
+net bevel-1-pers-mot-0-off => ksm-belt.fi-1.st-17.off-offset
+net bevel-1-pers-mot-0-whm-secs => ksm-belt.fi-1.st-17.whm-secs
+net bevel-1-mot-0-ena => ksm-belt.fi-1.st-17.enabled
+net bevel-1-mot-0-manu => ksm-belt.fi-1.st-17.manu
+net bevel-1-mot-0-req <= ksm-belt.fi-1.st-17.out
+net bevel-1-marg-start => ksm-belt.fi-1.st-17.marg-start
+net bevel-1-marg-end => ksm-belt.fi-1.st-17.marg-end
+net bevel-1-calib-matprep-ok <= ksm-belt.fi-1.st-17.activate-full
+
+net bevel-1-pers-mot-1-pos => ksm-belt.fi-1.st-18.position
+net bevel-1-pers-mot-1-on => ksm-belt.fi-1.st-18.on-offset
+net bevel-1-pers-mot-1-off => ksm-belt.fi-1.st-18.off-offset
+net bevel-1-pers-mot-1-whm-secs => ksm-belt.fi-1.st-18.whm-secs
+net bevel-1-mot-1-ena => ksm-belt.fi-1.st-18.enabled
+net bevel-1-mot-1-manu => ksm-belt.fi-1.st-18.manu
+net bevel-1-mot-1-active <= ksm-belt.fi-1.st-18.out
+net bevel-1-marg-start => ksm-belt.fi-1.st-18.marg-start
+net bevel-1-marg-end => ksm-belt.fi-1.st-18.marg-end
+
+net bevel-1-pers-mot-2-pos => ksm-belt.fi-1.st-19.position
+net bevel-1-pers-mot-2-on => ksm-belt.fi-1.st-19.on-offset
+net bevel-1-pers-mot-2-off => ksm-belt.fi-1.st-19.off-offset
+net bevel-1-pers-mot-2-whm-secs => ksm-belt.fi-1.st-19.whm-secs
+net bevel-1-mot-2-ena => ksm-belt.fi-1.st-19.enabled
+net bevel-1-mot-2-manu => ksm-belt.fi-1.st-19.manu
+net bevel-1-mot-2-active <= ksm-belt.fi-1.st-19.out
+net bevel-1-marg-start => ksm-belt.fi-1.st-19.marg-start
+net bevel-1-marg-end => ksm-belt.fi-1.st-19.marg-end
+
+
+net bevel-0-pers-posctl-pos => ksm-belt.fi-1.st-20.position
+net bevel-0-pers-posctl-on => ksm-belt.fi-1.st-20.on-offset
+net bevel-0-pers-posctl-off => ksm-belt.fi-1.st-20.off-offset
+net bevel-0-pers-posctl-whm-secs <= ksm-belt.fi-1.st-20.whm-secs
+net bevel-0-posctl-active <= ksm-belt.fi-1.st-20.activate-part
+
+net bevel-1-pers-posctl-pos => ksm-belt.fi-1.st-21.position
+net bevel-1-pers-posctl-on => ksm-belt.fi-1.st-21.on-offset
+net bevel-1-pers-posctl-off => ksm-belt.fi-1.st-21.off-offset
+net bevel-1-pers-posctl-whm-secs <= ksm-belt.fi-1.st-21.whm-secs
+net bevel-1-posctl-active <= ksm-belt.fi-1.st-21.activate-part
+net bevel-1-mat-height <= ksm-belt.fi-1.st-21.height
+
+###########################################################
+# material probing
+###########################################################
+
+setp ksm-belt.fi-0.probe-delay [MATPROBE]DELAY_MS
+setp ksm-belt.fi-0.probe-offset [MATPROBE]OFFSET
+setp ksm-belt.fi-1.probe-delay [MATPROBE]DELAY_MS
+setp ksm-belt.fi-1.probe-offset [MATPROBE]OFFSET
+
+# material probe is done on roll 1
+net rolls-1-active => ksm-belt.fi-0.probe-enable
+net matprobe-raw => ksm-belt.fi-0.probe-value
+net matprobe-pos <= ksm-belt.fi-0.probe-height
+net rolls-1-active => ksm-belt.fi-1.probe-enable
+net matprobe-raw => ksm-belt.fi-1.probe-value
+
+###########################################################
+# water control
+###########################################################
+
+setp ksm-belt.fi-1.st-22.position [WATER_FACE]POSITION
+setp ksm-belt.fi-1.st-22.on-offset [WATER_FACE]ON_OFFSET
+setp ksm-belt.fi-1.st-22.off-offset [WATER_FACE]OFF_OFFSET
+net water-face-active <= ksm-belt.fi-1.st-22.activate-part
+
+net water-face-active => ksm-main.water-face-active
+net faces-0-ena => ksm-main.water-face-ena-0
+net faces-1-ena => ksm-main.water-face-ena-1
+net faces-2-ena => ksm-main.water-face-ena-2
+net faces-3-ena => ksm-main.water-face-ena-3
+net faces-4-ena => ksm-main.water-face-ena-4
+net faces-5-ena => ksm-main.water-face-ena-5
+net faces-6-ena => ksm-main.water-face-ena-6
+net faces-7-ena => ksm-main.water-face-ena-7
+net faces-8-ena => ksm-main.water-face-ena-8
+net faces-9-ena => ksm-main.water-face-ena-9
+net water-face-on <= ksm-main.water-face-on
+
+setp ksm-belt.fi-1.st-23.position [WATER_BEVEL]POSITION
+setp ksm-belt.fi-1.st-23.on-offset [WATER_BEVEL]ON_OFFSET
+setp ksm-belt.fi-1.st-23.off-offset [WATER_BEVEL]OFF_OFFSET
+net water-bevel-active <= ksm-belt.fi-1.st-23.activate-part
+
+net water-bevel-active => ksm-main.water-bevel-active
+net bevel-0-mot-0-ena => ksm-main.water-bevel-ena-0
+net bevel-0-mot-1-ena => ksm-main.water-bevel-ena-1
+net bevel-0-mot-2-ena => ksm-main.water-bevel-ena-2
+net bevel-1-mot-0-ena => ksm-main.water-bevel-ena-3
+net bevel-1-mot-1-ena => ksm-main.water-bevel-ena-4
+net bevel-1-mot-2-ena => ksm-main.water-bevel-ena-5
+net water-bevel-on <= ksm-main.water-bevel-on
+

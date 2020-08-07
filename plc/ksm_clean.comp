@@ -1,0 +1,115 @@
+component ksm_clean "KSM clean";
+
+author "Sascha Ittner";
+license "GPL";
+
+pin in bit ctrl_voltage;
+pin in bit automatic_running;
+
+pin in bit locked;
+pin in bit unlocked;
+pin in bit is_up;
+
+pin in bit active;
+
+pin out bit lock;
+pin out bit unlock;
+
+pin out bit up;
+pin out bit down;
+
+pin in bit req_calib;
+pin in bit req_clean;
+
+pin out bit is_calib;
+pin out bit is_clean;
+
+pin out bit error;
+
+variable int64_t lock_timer;
+variable int64_t unlock_timer;
+
+function _ fp;
+
+;;
+
+#define CYL_DELAY 1000000000LL
+
+FUNCTION(_) {
+
+  lock = 0;
+  unlock = 0;
+  up = 0;
+  down = 0;
+  error = 0;
+
+  if (!ctrl_voltage) {
+    lock_timer = CYL_DELAY;
+    unlock_timer = CYL_DELAY;
+    if (locked && !unlocked) {
+      is_calib = 1;
+      is_clean = 0;
+    } else if (!locked && unlocked) {
+      is_calib = 0;
+      is_clean = 1;
+    }
+    return;
+  }
+
+  if (is_calib && !is_clean) {
+    lock = 1;
+  } else if (!is_calib && is_clean) {
+    unlock = 1;
+  } else {
+    error = 1;
+  }
+
+  if (is_clean && active) {
+    down = 1;
+  } else {
+    up = 1;
+  }
+
+  if (!automatic_running) {
+    if (req_calib && !req_clean) {
+      if (is_up) {
+        is_calib = 1;
+        is_clean = 0;
+      } else {
+        error = 1;
+      }
+    }
+
+    if (!req_calib && req_clean) {
+      if (is_up) {
+        is_calib = 0;
+        is_clean = 1;
+      } else {
+        error = 1;
+      }
+    }
+  }
+
+  if (lock) {
+    if (locked && !unlocked) {
+      lock_timer = CYL_DELAY;
+    }
+    if (lock_timer > 0) {
+      lock_timer -= period;
+    } else {
+      error = 1;
+    }
+  }
+
+  if (unlock) {
+    if (!locked && unlocked) {
+      unlock_timer = CYL_DELAY;
+    }
+    if (unlock_timer > 0) {
+      unlock_timer -= period;
+    } else {
+      error = 1;
+    }
+  }
+}
+

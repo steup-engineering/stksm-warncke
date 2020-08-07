@@ -1,0 +1,136 @@
+component ksm_unidev "KSM universal device";
+
+author "Sascha Ittner, Dominik Braun";
+license "GPL";
+
+param rw float pos_0 = 20.0;
+param rw float pos_1 = 30.0;
+param rw float pos_2 = 40.0;
+param rw float window = 8.0;
+
+pin in bit pos_sw_0;
+pin in bit pos_sw_1;
+pin in bit pos_sw_2;
+
+pin out bit pos_cyl_0;
+pin out bit pos_cyl_1;
+pin out bit pos_cyl_2;
+
+pin out s32 pos_idx;
+
+pin in float height;
+pin out float selected;
+
+pin out bit error;
+
+pin in bit in;
+pin out bit out;
+
+variable int64_t cyl_hold_timer;
+
+variable int64_t cyl_0_on_timer;
+variable int64_t cyl_0_off_timer;
+variable int64_t cyl_1_on_timer;
+variable int64_t cyl_1_off_timer;
+variable int64_t cyl_2_on_timer;
+variable int64_t cyl_2_off_timer;
+
+function _ fp;
+
+;;
+
+#include <math.h>
+
+#define CYL_COUNT 3
+#define CYL_HOLD_DELAY 500000000LL
+#define CYL_ERR_DELAY 1000000000LL
+
+static void update_pos(int idx, double pos, double hght, double win, double *err, volatile hal_s32_t *idx_out, volatile real_t *pos_out) {
+  double lerr;
+
+  if (hght < (pos - win) || hght > (pos + win)) {
+    return;
+  }
+
+  lerr = fabs(hght - pos);
+  if (*err < 0.0 || lerr < *err) {
+    *err = lerr;
+    *idx_out = idx;
+    *pos_out = pos;
+  }
+}
+
+static void check_cyl(long long dt, int sw, int cyl, int64_t *on_timer, int64_t *off_timer, volatile hal_bit_t *err_out) {
+  if (cyl) {
+    *off_timer = 0;
+    if (*on_timer < CYL_ERR_DELAY) {
+      *on_timer += dt;
+    } else if (!sw) {
+      *err_out = 1;
+    }
+  } else {
+    *on_timer = 0;
+    if (*off_timer < CYL_ERR_DELAY) {
+      *off_timer += dt;
+    } else if (sw) {
+      *err_out = 1;
+    }
+  }
+}
+
+
+FUNCTION(_) {
+  out = 0;
+  error = 0;
+
+  if (in) {
+    if (pos_idx < 0) {
+      if (height == 0.0) {
+        pos_idx = 0;
+        selected = pos_0;
+      } else {
+        double err = -1.0;
+        update_pos(0, pos_0, height, window, &err, &pos_idx, &selected);
+        update_pos(1, pos_1, height, window, &err, &pos_idx, &selected);
+        update_pos(2, pos_2, height, window, &err, &pos_idx, &selected);
+      }
+    }
+
+    cyl_hold_timer = 0;
+    switch(pos_idx) {
+      case 0:
+        pos_cyl_0 = 1;
+        out = pos_sw_0;
+        break;
+      case 1:
+        pos_cyl_1 = 1;
+        out = pos_sw_1;
+        break;
+      case 2:
+        pos_cyl_2 = 1;
+        out = pos_sw_2;
+        break;
+      default:
+        error = 1;
+    }
+
+  } else {
+    pos_idx = -1;
+    selected = 0.0;
+
+    out = 0;
+
+    if (cyl_hold_timer < CYL_HOLD_DELAY) {
+      cyl_hold_timer += period;
+    } else {
+      pos_cyl_0 = 0;
+      pos_cyl_1 = 0;
+      pos_cyl_2 = 0;
+    }
+  }
+
+  check_cyl(period, pos_sw_0, pos_cyl_0, &cyl_0_on_timer, &cyl_0_off_timer, &error);
+  check_cyl(period, pos_sw_1, pos_cyl_1, &cyl_1_on_timer, &cyl_1_off_timer, &error);
+  check_cyl(period, pos_sw_2, pos_cyl_2, &cyl_2_on_timer, &cyl_2_off_timer, &error);
+}
+

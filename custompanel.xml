@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<pyvcp>
+  <table>
+    <tablerow/>
+      <checkbutton>
+        <halpin>"bevel-1-cyl-offset"</halpin>
+        <text>"bevel-1-cyl-offset"</text>
+      </checkbutton>
+  </table>
+</pyvcp>
+

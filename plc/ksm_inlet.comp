@@ -1,0 +1,96 @@
+component ksm_inlet "KSM inlet";
+
+author "Sascha Ittner, Dominik Braun";
+license "GPL";
+
+pin in bit ctrl_voltage;
+pin in bit no_error;
+
+pin in bit btn_up;
+pin in bit btn_down;
+
+pin in bit sw_lim_up;
+pin in bit sw_lim_down;
+
+pin out bit out_up;
+pin out bit out_down;
+
+pin in bit btn_ack;
+pin out bit ack_req;
+pin out bit ack_req_lamp;
+
+pin in bit belt_start_in;
+pin out bit belt_start_out;
+pin in bit automatic_running;
+
+param rw u32 idle_timeout = 60;
+
+variable int64_t up_timer;
+variable int64_t down_timer;
+variable int64_t idle_timer;
+variable int64_t blink_timer;
+
+function _ fp;
+
+;;
+
+#define ILOCK_DELAY 100000000LL
+#define BLINK_DELAY 500000000LL
+
+FUNCTION(_) {
+  out_up = 0;
+  out_down = 0;
+
+  if (up_timer > 0) {
+    up_timer -= period;
+  }
+  if (down_timer > 0) {
+    down_timer -= period;
+  }
+
+  // handle ack
+  if (idle_timer > 0) {
+    idle_timer -= period;
+  }
+
+  belt_start_out = 0;
+  if (belt_start_in && !ack_req) {
+    if (idle_timer > 0) {
+      belt_start_out = 1;
+    } else {
+      ack_req = 1;
+    }
+  }
+
+  if (automatic_running || (ack_req && btn_ack && !belt_start_in)) {
+    idle_timer = (int64_t) idle_timeout * 1000000000LL;
+    ack_req = 0;
+  }
+
+  if (ack_req) {
+    if (blink_timer > 0) {
+      blink_timer -= period;
+    } else {
+      blink_timer += BLINK_DELAY;
+      ack_req_lamp = !ack_req_lamp;
+    }
+  } else {
+    blink_timer = 0;
+    ack_req_lamp = 0;
+  }
+
+  if (!ctrl_voltage || !no_error) {
+    return;
+  }
+
+  if (sw_lim_up && btn_up && !btn_down && up_timer <= 0) {
+    down_timer = ILOCK_DELAY;
+    out_up = 1;
+  }
+
+  if (sw_lim_down && btn_down && !btn_up && down_timer <= 0) {
+    up_timer = ILOCK_DELAY;
+    out_down = 1;
+  }
+}
+

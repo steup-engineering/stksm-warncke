@@ -1,0 +1,155 @@
+###########################################################
+# axis components
+###########################################################
+
+# bevel 0
+
+setp bevel-0.home-velo [BEVEL_0]HOME_VELOCITY
+setp bevel-0.calib-velo [BEVEL_0]CALIB_VELOCITY
+setp bevel-0.calib-min [BEVEL_0]MIN_LIMIT
+setp bevel-0.calib-max [BEVEL_0]MAX_LIMIT
+setp bevel-0.max-velo [BEVEL_0]MAX_VELOCITY
+setp bevel-0.onpos-window [BEVEL_0]ONPOS
+setp bevel-0.ferror-window [BEVEL_0]FERROR
+setp bevel-0.offset-cyl-dist [BEVEL_0]OFFSET_CYL_DIST
+setp bevel-0.offset-cyl-thold [BEVEL_0]OFFSET_CYL_THOLD
+
+net bevel-0-pers-refpos => bevel-0.reference
+
+net ctrl-voltage => bevel-0.ctrl-voltage
+net automatic-running => bevel-0.automatic-running
+net has-material => bevel-0.has-material
+net bevel-0-lim-velo <= bevel-0.lim-velo
+net bevel-0-lim-load <= bevel-0.lim-load
+net bevel-0-req <= bevel-0.pos-out
+net bevel-0-cmd => bevel-0.pos-cmd
+net bevel-0-fb => bevel-0.pos-fb
+net bevel-amps-ena => bevel-0.amp-ena
+net bevel-0-amp-ready => bevel-0.amp-ready
+net bevel-0-amp-fault => bevel-0.amp-fault
+net bevel-0-on-pos <= bevel-0.on-pos
+net bevel-0-ferror <= bevel-0.ferror
+net bevel-0-posctl-active => bevel-0.active-pos
+net bevel-0-mot-0-req => bevel-0.active-mot
+net bevel-0-width => bevel-0.width
+net bevel-0-pers-width-offset => bevel-0.width-offset
+net bevel-0-calib-start => bevel-0.calib-start
+net bevel-0-calib-cancel => bevel-0.calib-cancel
+net calib-dec => bevel-0.calib-btn-inc
+net calib-inc => bevel-0.calib-btn-dec
+net calib-ok => bevel-0.calib-btn-ok
+net bevel-0-calib-step <= bevel-0.calib-step
+net calib-interlock => bevel-0.calib-interlock
+net calib-matprep => bevel-0.calib-matprep
+net bevel-0-calib-matprep-ok => bevel-0.calib-matprep-ok
+net bevel-0-mot-0-active <= bevel-0.mot-out
+net bevel-0-error => bevel-0.error
+
+
+# bevel 1
+
+setp bevel-1.home-velo [BEVEL_1]HOME_VELOCITY
+setp bevel-1.calib-velo [BEVEL_1]CALIB_VELOCITY
+setp bevel-1.calib-min [BEVEL_1]MIN_LIMIT
+setp bevel-1.calib-max [BEVEL_1]MAX_LIMIT
+setp bevel-1.max-velo [BEVEL_1]MAX_VELOCITY
+setp bevel-1.onpos-window [BEVEL_1]ONPOS
+setp bevel-1.ferror-window [BEVEL_1]FERROR
+setp bevel-1.offset-cyl-dist [BEVEL_1]OFFSET_CYL_DIST
+setp bevel-1.offset-cyl-thold [BEVEL_1]OFFSET_CYL_THOLD
+
+net bevel-1-pers-refpos => bevel-1.reference
+
+net ctrl-voltage => bevel-1.ctrl-voltage
+net automatic-running => bevel-1.automatic-running
+net has-material => bevel-1.has-material
+net bevel-1-lim-velo <= bevel-1.lim-velo
+net bevel-1-lim-load <= bevel-1.lim-load
+net bevel-1-req <= bevel-1.pos-out
+net bevel-1-cmd => bevel-1.pos-cmd
+net bevel-1-fb => bevel-1.pos-fb
+net bevel-amps-ena => bevel-1.amp-ena
+net bevel-1-amp-ready => bevel-1.amp-ready
+net bevel-1-amp-fault => bevel-1.amp-fault
+net bevel-1-on-pos <= bevel-1.on-pos
+net bevel-1-ferror <= bevel-1.ferror
+net bevel-1-posctl-active => bevel-1.active-pos
+net bevel-1-mot-0-req => bevel-1.active-mot
+net bevel-1-mat-height => bevel-1.height
+net bevel-1-width => bevel-1.width
+net bevel-1-pers-width-offset => bevel-1.width-offset
+net bevel-1-calib-start => bevel-1.calib-start
+net bevel-1-calib-cancel => bevel-1.calib-cancel
+net calib-dec => bevel-1.calib-btn-inc
+net calib-inc => bevel-1.calib-btn-dec
+net calib-ok => bevel-1.calib-btn-ok
+net bevel-1-calib-step <= bevel-1.calib-step
+net calib-interlock => bevel-1.calib-interlock
+net calib-matprep => bevel-1.calib-matprep
+net bevel-1-calib-matprep-ok => bevel-1.calib-matprep-ok
+net bevel-1-cyl-offset <= bevel-1.offset-cyl-out
+net bevel-1-mot-0-active <= bevel-1.mot-out
+net bevel-1-error => bevel-1.error
+
+###########################################################
+# limiters
+###########################################################
+
+# bevel 0
+
+setp bevel-0-lim.min [BEVEL_0]MIN_LIMIT
+setp bevel-0-lim.max [BEVEL_0]MAX_LIMIT
+setp bevel-0-lim.maxa [BEVEL_0]MAX_ACCELERATION
+
+net bevel-0-lim-velo => bevel-0-lim.maxv
+net bevel-0-lim-load => bevel-0-lim.load
+net bevel-0-req => bevel-0-lim.in
+net bevel-0-cmd <= bevel-0-lim.out
+
+# bevel 1
+
+setp bevel-1-lim.min [BEVEL_1]MIN_LIMIT
+setp bevel-1-lim.max [BEVEL_1]MAX_LIMIT
+setp bevel-1-lim.maxa [BEVEL_1]MAX_ACCELERATION
+
+net bevel-1-lim-velo => bevel-1-lim.maxv
+net bevel-1-lim-load => bevel-1-lim.load
+net bevel-1-req => bevel-1-lim.in
+net bevel-1-cmd <= bevel-1-lim.out
+
+###########################################################
+# position controllers
+###########################################################
+
+# bevel 0
+
+setp bevel-0-pid.Pgain [BEVEL_0]P
+setp bevel-0-pid.Igain [BEVEL_0]I
+setp bevel-0-pid.Dgain [BEVEL_0]D
+setp bevel-0-pid.FF0 [BEVEL_0]FF0
+setp bevel-0-pid.FF1 [BEVEL_0]FF1
+setp bevel-0-pid.FF2 [BEVEL_0]FF2
+setp bevel-0-pid.deadband [BEVEL_0]DEADBAND
+setp bevel-0-pid.maxoutput [BEVEL_0]MAX_VELOCITY
+
+net bevel-amps-ena => bevel-0-pid.enable
+net bevel-0-cmd => bevel-0-pid.command
+net bevel-0-fb => bevel-0-pid.feedback
+net bevel-0-vel-cmd <= bevel-0-pid.output
+
+# bevel 1
+
+setp bevel-1-pid.Pgain [BEVEL_1]P
+setp bevel-1-pid.Igain [BEVEL_1]I
+setp bevel-1-pid.Dgain [BEVEL_1]D
+setp bevel-1-pid.FF0 [BEVEL_1]FF0
+setp bevel-1-pid.FF1 [BEVEL_1]FF1
+setp bevel-1-pid.FF2 [BEVEL_1]FF2
+setp bevel-1-pid.deadband [BEVEL_1]DEADBAND
+setp bevel-1-pid.maxoutput [BEVEL_1]MAX_VELOCITY
+
+net bevel-amps-ena => bevel-1-pid.enable
+net bevel-1-cmd => bevel-1-pid.command
+net bevel-1-fb => bevel-1-pid.feedback
+net bevel-1-vel-cmd <= bevel-1-pid.output
+

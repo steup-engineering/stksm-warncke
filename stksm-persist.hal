@@ -1,0 +1,433 @@
+###########################################################
+# global
+###########################################################
+
+retain main-pers-whm-dcms
+retain main-pers-whm-mdcm
+retain main-pers-whm-secs
+retain main-pers-whm-job-dcms
+retain main-pers-whm-job-mdcm
+retain main-pers-whm-job-secs
+
+###########################################################
+# faces
+###########################################################
+
+sets faces-0-pers-pos 240.0
+sets faces-1-pers-pos 440.0
+sets faces-2-pers-pos 640.0
+sets faces-3-pers-pos 840.0
+sets faces-4-pers-pos 1040.0
+sets faces-5-pers-pos 1240.0
+sets faces-6-pers-pos 1440.0
+sets faces-7-pers-pos 1640.0
+sets faces-8-pers-pos 1840.0
+sets faces-9-pers-pos 2040.0
+
+retain faces-0-pers-pos
+retain faces-1-pers-pos
+retain faces-2-pers-pos
+retain faces-3-pers-pos
+retain faces-4-pers-pos
+retain faces-5-pers-pos
+retain faces-6-pers-pos
+retain faces-7-pers-pos
+retain faces-8-pers-pos
+retain faces-9-pers-pos
+
+sets faces-0-pers-on 10.0
+sets faces-1-pers-on 10.0
+sets faces-2-pers-on 10.0
+sets faces-3-pers-on 10.0
+sets faces-4-pers-on 10.0
+sets faces-5-pers-on 10.0
+sets faces-6-pers-on 10.0
+sets faces-7-pers-on 10.0
+sets faces-8-pers-on 10.0
+sets faces-9-pers-on 10.0
+
+retain faces-0-pers-on
+retain faces-1-pers-on
+retain faces-2-pers-on
+retain faces-3-pers-on
+retain faces-4-pers-on
+retain faces-5-pers-on
+retain faces-6-pers-on
+retain faces-7-pers-on
+retain faces-8-pers-on
+retain faces-9-pers-on
+
+sets faces-0-pers-off 10.0
+sets faces-1-pers-off 10.0
+sets faces-2-pers-off 10.0
+sets faces-3-pers-off 10.0
+sets faces-4-pers-off 10.0
+sets faces-5-pers-off 10.0
+sets faces-6-pers-off 10.0
+sets faces-7-pers-off 10.0
+sets faces-8-pers-off 10.0
+sets faces-9-pers-off 10.0
+
+retain faces-0-pers-off
+retain faces-1-pers-off
+retain faces-2-pers-off
+retain faces-3-pers-off
+retain faces-4-pers-off
+retain faces-5-pers-off
+retain faces-6-pers-off
+retain faces-7-pers-off
+retain faces-8-pers-off
+retain faces-9-pers-off
+
+retain faces-0-pers-whm-dcms
+retain faces-1-pers-whm-dcms
+retain faces-2-pers-whm-dcms
+retain faces-3-pers-whm-dcms
+retain faces-4-pers-whm-dcms
+retain faces-5-pers-whm-dcms
+retain faces-6-pers-whm-dcms
+retain faces-7-pers-whm-dcms
+retain faces-8-pers-whm-dcms
+retain faces-9-pers-whm-dcms
+
+retain faces-0-pers-whm-secs
+retain faces-1-pers-whm-secs
+retain faces-2-pers-whm-secs
+retain faces-3-pers-whm-secs
+retain faces-4-pers-whm-secs
+retain faces-5-pers-whm-secs
+retain faces-6-pers-whm-secs
+retain faces-7-pers-whm-secs
+retain faces-8-pers-whm-secs
+retain faces-9-pers-whm-secs
+
+###########################################################
+# cleaners
+###########################################################
+
+sets cleaners-0-pers-pos 2460.0
+sets cleaners-1-pers-pos 2740.0
+sets cleaners-2-pers-pos 3020.0
+
+retain cleaners-0-pers-pos
+retain cleaners-1-pers-pos
+retain cleaners-2-pers-pos
+
+sets cleaners-0-pers-on 10.0
+sets cleaners-1-pers-on 10.0
+sets cleaners-2-pers-on 10.0
+
+retain cleaners-0-pers-on
+retain cleaners-1-pers-on
+retain cleaners-2-pers-on
+
+sets cleaners-0-pers-off 10.0
+sets cleaners-1-pers-off 10.0
+sets cleaners-2-pers-off 10.0
+
+retain cleaners-0-pers-off
+retain cleaners-1-pers-off
+retain cleaners-2-pers-off
+
+retain cleaners-0-pers-whm-dcms
+retain cleaners-1-pers-whm-dcms
+retain cleaners-2-pers-whm-dcms
+
+retain cleaners-0-pers-whm-secs
+retain cleaners-1-pers-whm-secs
+retain cleaners-2-pers-whm-secs
+
+###########################################################
+# unidevs
+###########################################################
+
+sets unidevs-0-pers-pos 3600.0
+retain unidevs-0-pers-pos
+
+sets unidevs-0-pers-on 0.0
+retain unidevs-0-pers-on
+
+sets unidevs-0-pers-off 0.0
+retain unidevs-0-pers-off
+
+retain unidevs-0-pers-whm-dcms
+retain unidevs-0-pers-whm-secs
+
+###########################################################
+# bevels
+###########################################################
+
+sets bevel-0-pers-mot-0-pos 3835.0
+sets bevel-0-pers-mot-1-pos 4015.0
+sets bevel-0-pers-mot-2-pos 4195.0
+sets bevel-1-pers-mot-0-pos 4695.0
+sets bevel-1-pers-mot-1-pos 4875.0
+sets bevel-1-pers-mot-2-pos 5055.0
+
+retain bevel-0-pers-mot-0-pos
+retain bevel-0-pers-mot-1-pos
+retain bevel-0-pers-mot-2-pos
+retain bevel-1-pers-mot-0-pos
+retain bevel-1-pers-mot-1-pos
+retain bevel-1-pers-mot-2-pos
+
+sets bevel-0-pers-mot-0-on 10.0
+sets bevel-0-pers-mot-1-on 10.0
+sets bevel-0-pers-mot-2-on 10.0
+sets bevel-1-pers-mot-0-on 10.0
+sets bevel-1-pers-mot-1-on 10.0
+sets bevel-1-pers-mot-2-on 10.0
+
+retain bevel-0-pers-mot-0-on
+retain bevel-0-pers-mot-1-on
+retain bevel-0-pers-mot-2-on
+retain bevel-1-pers-mot-0-on
+retain bevel-1-pers-mot-1-on
+retain bevel-1-pers-mot-2-on
+
+sets bevel-0-pers-mot-0-off 10.0
+sets bevel-0-pers-mot-1-off 10.0
+sets bevel-0-pers-mot-2-off 10.0
+sets bevel-1-pers-mot-0-off 10.0
+sets bevel-1-pers-mot-1-off 10.0
+sets bevel-1-pers-mot-2-off 10.0
+
+retain bevel-0-pers-mot-0-off
+retain bevel-0-pers-mot-1-off
+retain bevel-0-pers-mot-2-off
+retain bevel-1-pers-mot-0-off
+retain bevel-1-pers-mot-1-off
+retain bevel-1-pers-mot-2-off
+
+retain bevel-0-pers-mot-0-whm-dcms
+retain bevel-0-pers-mot-1-whm-dcms
+retain bevel-0-pers-mot-2-whm-dcms
+retain bevel-1-pers-mot-0-whm-dcms
+retain bevel-1-pers-mot-1-whm-dcms
+retain bevel-1-pers-mot-2-whm-dcms
+
+retain bevel-0-pers-mot-0-whm-secs
+retain bevel-0-pers-mot-1-whm-secs
+retain bevel-0-pers-mot-2-whm-secs
+retain bevel-1-pers-mot-0-whm-secs
+retain bevel-1-pers-mot-1-whm-secs
+retain bevel-1-pers-mot-2-whm-secs
+
+sets bevel-0-pers-refpos 0.0
+sets bevel-1-pers-refpos 0.0
+
+retain bevel-0-pers-refpos
+retain bevel-1-pers-refpos
+
+sets bevel-0-pers-posctl-pos [BEVEL_0]POSCTL_CENTER
+sets bevel-0-pers-posctl-on [BEVEL_0]POSCTL_ON
+sets bevel-0-pers-posctl-off [BEVEL_0]POSCTL_OFF
+
+retain bevel-0-pers-posctl-pos
+retain bevel-0-pers-posctl-on
+retain bevel-0-pers-posctl-off
+
+sets bevel-1-pers-posctl-pos [BEVEL_1]POSCTL_CENTER
+sets bevel-1-pers-posctl-on [BEVEL_1]POSCTL_ON
+sets bevel-1-pers-posctl-off [BEVEL_1]POSCTL_OFF
+
+retain bevel-1-pers-posctl-pos
+retain bevel-1-pers-posctl-on
+retain bevel-1-pers-posctl-off
+
+###########################################################
+# rolls
+###########################################################
+
+sets roll-0-pers-pos [ROLLS]POS_0
+sets roll-1-pers-pos [ROLLS]POS_1
+sets roll-2-pers-pos [ROLLS]POS_2
+sets roll-3-pers-pos [ROLLS]POS_3
+sets roll-4-pers-pos [ROLLS]POS_4
+sets roll-5-pers-pos [ROLLS]POS_5
+sets roll-6-pers-pos [ROLLS]POS_6
+sets roll-7-pers-pos [ROLLS]POS_7
+sets roll-8-pers-pos [ROLLS]POS_8
+sets roll-9-pers-pos [ROLLS]POS_9
+sets roll-10-pers-pos [ROLLS]POS_10
+sets roll-11-pers-pos [ROLLS]POS_11
+sets roll-12-pers-pos [ROLLS]POS_12
+sets roll-13-pers-pos [ROLLS]POS_13
+sets roll-14-pers-pos [ROLLS]POS_14
+sets roll-15-pers-pos [ROLLS]POS_15
+sets roll-16-pers-pos [ROLLS]POS_16
+sets roll-17-pers-pos [ROLLS]POS_17
+sets roll-18-pers-pos [ROLLS]POS_18
+sets roll-19-pers-pos [ROLLS]POS_19
+sets roll-20-pers-pos [ROLLS]POS_20
+sets roll-21-pers-pos [ROLLS]POS_21
+sets roll-22-pers-pos [ROLLS]POS_22
+sets roll-23-pers-pos [ROLLS]POS_23
+sets roll-24-pers-pos [ROLLS]POS_24
+sets roll-25-pers-pos [ROLLS]POS_25
+sets roll-26-pers-pos [ROLLS]POS_26
+sets roll-27-pers-pos [ROLLS]POS_27
+sets roll-28-pers-pos [ROLLS]POS_28
+sets roll-29-pers-pos [ROLLS]POS_29
+sets roll-30-pers-pos [ROLLS]POS_30
+
+retain roll-0-pers-pos
+retain roll-1-pers-pos
+retain roll-2-pers-pos
+retain roll-3-pers-pos
+retain roll-4-pers-pos
+retain roll-5-pers-pos
+retain roll-6-pers-pos
+retain roll-7-pers-pos
+retain roll-8-pers-pos
+retain roll-9-pers-pos
+retain roll-10-pers-pos
+retain roll-11-pers-pos
+retain roll-12-pers-pos
+retain roll-13-pers-pos
+retain roll-14-pers-pos
+retain roll-15-pers-pos
+retain roll-16-pers-pos
+retain roll-17-pers-pos
+retain roll-18-pers-pos
+retain roll-19-pers-pos
+retain roll-20-pers-pos
+retain roll-21-pers-pos
+retain roll-22-pers-pos
+retain roll-23-pers-pos
+retain roll-24-pers-pos
+retain roll-25-pers-pos
+retain roll-26-pers-pos
+retain roll-27-pers-pos
+retain roll-28-pers-pos
+retain roll-29-pers-pos
+retain roll-30-pers-pos
+
+sets roll-0-pers-on [ROLLS]ON_OFFSET
+sets roll-1-pers-on [ROLLS]ON_OFFSET
+sets roll-2-pers-on [ROLLS]ON_OFFSET
+sets roll-3-pers-on [ROLLS]ON_OFFSET
+sets roll-4-pers-on [ROLLS]ON_OFFSET
+sets roll-5-pers-on [ROLLS]ON_OFFSET
+sets roll-6-pers-on [ROLLS]ON_OFFSET
+sets roll-7-pers-on [ROLLS]ON_OFFSET
+sets roll-8-pers-on [ROLLS]ON_OFFSET
+sets roll-9-pers-on [ROLLS]ON_OFFSET
+sets roll-10-pers-on [ROLLS]ON_OFFSET
+sets roll-11-pers-on [ROLLS]ON_OFFSET
+sets roll-12-pers-on [ROLLS]ON_OFFSET
+sets roll-13-pers-on [ROLLS]ON_OFFSET
+sets roll-14-pers-on [ROLLS]ON_OFFSET
+sets roll-15-pers-on [ROLLS]ON_OFFSET
+sets roll-16-pers-on [ROLLS]ON_OFFSET
+sets roll-17-pers-on [ROLLS]ON_OFFSET
+sets roll-18-pers-on [ROLLS]ON_OFFSET
+sets roll-19-pers-on [ROLLS]ON_OFFSET
+sets roll-20-pers-on [ROLLS]ON_OFFSET
+sets roll-21-pers-on [ROLLS]ON_OFFSET
+sets roll-22-pers-on [ROLLS]ON_OFFSET
+sets roll-23-pers-on [ROLLS]ON_OFFSET
+sets roll-24-pers-on [ROLLS]ON_OFFSET
+sets roll-25-pers-on [ROLLS]ON_OFFSET
+sets roll-26-pers-on [ROLLS]ON_OFFSET
+sets roll-27-pers-on [ROLLS]ON_OFFSET
+sets roll-28-pers-on [ROLLS]ON_OFFSET
+sets roll-29-pers-on [ROLLS]ON_OFFSET
+sets roll-30-pers-on [ROLLS]ON_OFFSET
+
+retain roll-0-pers-on
+retain roll-1-pers-on
+retain roll-2-pers-on
+retain roll-3-pers-on
+retain roll-4-pers-on
+retain roll-5-pers-on
+retain roll-6-pers-on
+retain roll-7-pers-on
+retain roll-8-pers-on
+retain roll-9-pers-on
+retain roll-10-pers-on
+retain roll-11-pers-on
+retain roll-12-pers-on
+retain roll-13-pers-on
+retain roll-14-pers-on
+retain roll-15-pers-on
+retain roll-16-pers-on
+retain roll-17-pers-on
+retain roll-18-pers-on
+retain roll-19-pers-on
+retain roll-20-pers-on
+retain roll-21-pers-on
+retain roll-22-pers-on
+retain roll-23-pers-on
+retain roll-24-pers-on
+retain roll-25-pers-on
+retain roll-26-pers-on
+retain roll-27-pers-on
+retain roll-28-pers-on
+retain roll-29-pers-on
+retain roll-30-pers-on
+
+sets roll-0-pers-off [ROLLS]OFF_OFFSET
+sets roll-1-pers-off [ROLLS]OFF_OFFSET
+sets roll-2-pers-off [ROLLS]OFF_OFFSET
+sets roll-3-pers-off [ROLLS]OFF_OFFSET
+sets roll-4-pers-off [ROLLS]OFF_OFFSET
+sets roll-5-pers-off [ROLLS]OFF_OFFSET
+sets roll-6-pers-off [ROLLS]OFF_OFFSET
+sets roll-7-pers-off [ROLLS]OFF_OFFSET
+sets roll-8-pers-off [ROLLS]OFF_OFFSET
+sets roll-9-pers-off [ROLLS]OFF_OFFSET
+sets roll-10-pers-off [ROLLS]OFF_OFFSET
+sets roll-11-pers-off [ROLLS]OFF_OFFSET
+sets roll-12-pers-off [ROLLS]OFF_OFFSET
+sets roll-13-pers-off [ROLLS]OFF_OFFSET
+sets roll-14-pers-off [ROLLS]OFF_OFFSET
+sets roll-15-pers-off [ROLLS]OFF_OFFSET
+sets roll-16-pers-off [ROLLS]OFF_OFFSET
+sets roll-17-pers-off [ROLLS]OFF_OFFSET
+sets roll-18-pers-off [ROLLS]OFF_OFFSET
+sets roll-19-pers-off [ROLLS]OFF_OFFSET
+sets roll-20-pers-off [ROLLS]OFF_OFFSET
+sets roll-21-pers-off [ROLLS]OFF_OFFSET
+sets roll-22-pers-off [ROLLS]OFF_OFFSET
+sets roll-23-pers-off [ROLLS]OFF_OFFSET
+sets roll-24-pers-off [ROLLS]OFF_OFFSET
+sets roll-25-pers-off [ROLLS]OFF_OFFSET
+sets roll-26-pers-off [ROLLS]OFF_OFFSET
+sets roll-27-pers-off [ROLLS]OFF_OFFSET
+sets roll-28-pers-off [ROLLS]OFF_OFFSET
+sets roll-29-pers-off [ROLLS]OFF_OFFSET
+sets roll-30-pers-off [ROLLS]OFF_OFFSET
+
+retain roll-0-pers-off
+retain roll-1-pers-off
+retain roll-2-pers-off
+retain roll-3-pers-off
+retain roll-4-pers-off
+retain roll-5-pers-off
+retain roll-6-pers-off
+retain roll-7-pers-off
+retain roll-8-pers-off
+retain roll-9-pers-off
+retain roll-10-pers-off
+retain roll-11-pers-off
+retain roll-12-pers-off
+retain roll-13-pers-off
+retain roll-14-pers-off
+retain roll-15-pers-off
+retain roll-16-pers-off
+retain roll-17-pers-off
+retain roll-18-pers-off
+retain roll-19-pers-off
+retain roll-20-pers-off
+retain roll-21-pers-off
+retain roll-22-pers-off
+retain roll-23-pers-off
+retain roll-24-pers-off
+retain roll-25-pers-off
+retain roll-26-pers-off
+retain roll-27-pers-off
+retain roll-28-pers-off
+retain roll-29-pers-off
+retain roll-30-pers-off
+

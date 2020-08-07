@@ -1,0 +1,63 @@
+###########################################################
+#
+# STKSM Hal 
+#
+# Main HAL
+#
+###########################################################
+
+###########################################################
+# Setup
+###########################################################
+
+loadrt trivkins
+loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[TRAJ]AXES
+
+loadusr -W lcec_conf ethercat-conf.xml
+loadrt lcec
+
+# Realtime PLC Komponenten
+loadrt ksm_main
+loadrt ksm_belt belt_length=[BELT]LENGTH bucket_count=[BELT]FIFO_BUCKETS station_count=[BELT]STATION_COUNT_TOP,[BELT]STATION_COUNT_SIDE
+
+loadrt ksm_inlet names=inlet
+
+loadrt ksm_clean names=clean-0
+loadrt ksm_unidev names=unidev-0
+
+loadrt ksm_bevel names=bevel-0,bevel-1
+loadrt limit3 names=bevel-0-lim,bevel-1-lim
+loadrt pid names=bevel-0-pid,bevel-1-pid,belt-pid
+
+loadusr -W lcrest rest-config.xml
+
+###########################################################
+# Functions
+###########################################################
+
+addf lcec.read-all servo-thread
+
+addf motion-command-handler servo-thread
+addf motion-controller servo-thread
+
+addf ksm-belt servo-thread
+addf ksm-main servo-thread
+
+addf inlet servo-thread
+
+addf clean-0 servo-thread
+
+addf unidev-0 servo-thread
+
+addf bevel-0 servo-thread
+addf bevel-0-lim servo-thread
+addf bevel-0-pid.do-pid-calcs servo-thread
+
+addf bevel-1 servo-thread
+addf bevel-1-lim servo-thread
+addf bevel-1-pid.do-pid-calcs servo-thread
+
+addf belt-pid.do-pid-calcs servo-thread
+
+addf lcec.write-all servo-thread
+

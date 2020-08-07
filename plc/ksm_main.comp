@@ -1,0 +1,240 @@
+component ksm_main "KSM main PLC";
+
+author "Sascha Ittner, Dominik Braun";
+license "GPL";
+
+option singleton yes;
+
+param rw float idle_timeout = 120.0;
+param rw u32 ec_slaves = 0;
+
+pin out bit plc_run;
+
+pin in bit ctrl_voltage;
+pin out bit ctrl_voltage_lamp;
+
+pin in bit door_interlock;
+pin in bit air_press_ok;
+pin in bit water_press_ok;
+pin in bit motor_prot_ok;
+pin in bit belt_error;
+pin in bit unidev_error;
+pin in bit bevel_lower_error;
+pin in bit bevel_upper_error;
+pin in bit cleaner_0_error;
+
+pin in bit reset_error;
+pin out bit error_lamp;
+pin out u32 error_mask;
+pin out bit no_error;
+
+pin in bit belt_start;
+pin in bit belt_stop;
+pin out bit automatic_running;
+pin in bit calib_interlock;
+pin in bit has_material;
+pin out bit water_on;
+pin out bit bevel_amps_ena;
+
+pin in bit water_face_active;
+pin in bit water_face_ena_0;
+pin in bit water_face_ena_1;
+pin in bit water_face_ena_2;
+pin in bit water_face_ena_3;
+pin in bit water_face_ena_4;
+pin in bit water_face_ena_5;
+pin in bit water_face_ena_6;
+pin in bit water_face_ena_7;
+pin in bit water_face_ena_8;
+pin in bit water_face_ena_9;
+pin out bit water_face_on;
+
+pin in bit water_bevel_active;
+pin in bit water_bevel_ena_0;
+pin in bit water_bevel_ena_1;
+pin in bit water_bevel_ena_2;
+pin in bit water_bevel_ena_3;
+pin in bit water_bevel_ena_4;
+pin in bit water_bevel_ena_5;
+pin out bit water_bevel_on;
+
+pin in u32 ec_slaves_responding; 
+pin in bit ec_all_op;
+
+function _ fp;
+
+variable int ctrl_voltage_old = 0;
+variable hal_u32_t reset_error_old = 0;
+variable double error_blink = 0.0;
+variable double idle_timer = 0.0;
+
+;;
+
+#define ERR_EMERG_STOP		(1 << 0)
+#define ERR_DOOR_INTERLOCK	(1 << 1)
+#define ERR_AIR_PRESS		(1 << 2)
+#define ERR_WATER_PRESS		(1 << 3)
+#define ERR_MOTOR_PROT		(1 << 4)
+#define ERR_BELT			(1 << 5)
+#define ERR_UNIDEV			(1 << 6)
+#define ERR_BEVEL_LOWER		(1 << 7)
+#define ERR_BEVEL_UPPER		(1 << 8)
+#define ERR_BUS_SYSTEM		(1 << 9)
+#define ERR_CLEANER_0		(1 << 10)
+
+#define ERROR_BLINK_PERIOD	0.5
+
+FUNCTION(_) {
+	// plc run status
+	plc_run = 1;
+	ctrl_voltage_lamp = ctrl_voltage;
+
+	// reset errors
+	if (reset_error && !reset_error_old) {
+		error_mask = 0;
+		no_error = 1;
+	}
+	reset_error_old = reset_error;
+
+	// handle emercency stop
+	if (!ctrl_voltage && ctrl_voltage_old) {
+		rtapi_print_msg(RTAPI_MSG_ERR, "Emergency Stop activated!\n");
+		error_mask |= ERR_EMERG_STOP;
+		no_error = 0;
+	}
+	if (ctrl_voltage && !ctrl_voltage_old) {
+		error_mask = 0;
+		no_error = 1;
+	}
+		ctrl_voltage_old = ctrl_voltage;
+
+	// handle errors
+	if (ctrl_voltage) {
+		if (!door_interlock) {
+			if (!(error_mask & ERR_DOOR_INTERLOCK)) {
+			rtapi_print_msg(RTAPI_MSG_ERR, "Door interlock error!\n");
+			}
+			error_mask |= ERR_DOOR_INTERLOCK;
+			no_error = 0;
+		}
+		if (!air_press_ok) {
+			if (!(error_mask & ERR_AIR_PRESS)) {
+				rtapi_print_msg(RTAPI_MSG_ERR, "Air pressure error!\n");
+			}
+			error_mask |= ERR_AIR_PRESS;
+			no_error = 0;
+		}
+		if (!water_press_ok) {
+			if (!(error_mask & ERR_WATER_PRESS)) {
+				rtapi_print_msg(RTAPI_MSG_ERR, "Water pressure error!\n");
+			}
+			error_mask |= ERR_WATER_PRESS;
+			no_error = 0;
+		}
+		if (!motor_prot_ok) {
+			if (!(error_mask & ERR_MOTOR_PROT)) {
+				rtapi_print_msg(RTAPI_MSG_ERR, "Motor protection error!\n");
+			}
+			error_mask |= ERR_MOTOR_PROT;
+			no_error = 0;
+		}
+		if (belt_error) {
+			if (!(error_mask & ERR_BELT)) {
+				rtapi_print_msg(RTAPI_MSG_ERR, "Belt drive error!\n");
+			}
+			error_mask |= ERR_BELT;
+			no_error = 0;
+		}
+		if (unidev_error) {
+			if (!(error_mask & ERR_UNIDEV)) {
+				rtapi_print_msg(RTAPI_MSG_ERR, "Unidev drive error!\n");
+			}
+			error_mask |= ERR_UNIDEV;
+		}
+		if (bevel_lower_error) {
+			if (!(error_mask & ERR_BEVEL_LOWER)) {
+				rtapi_print_msg(RTAPI_MSG_ERR, "Bevel lower drive error!\n");
+			}
+			error_mask |= ERR_BEVEL_LOWER;
+			no_error = 0;
+		}
+		if (bevel_upper_error) {
+			if (!(error_mask & ERR_BEVEL_UPPER)) {
+				rtapi_print_msg(RTAPI_MSG_ERR, "Bevel upper drive error!\n");
+			}
+			error_mask |= ERR_BEVEL_UPPER;
+			no_error = 0;
+		}
+		if (cleaner_0_error) {
+			if (!(error_mask & ERR_CLEANER_0)) {
+				rtapi_print_msg(RTAPI_MSG_ERR, "Cleaner 0 error!\n");
+			}
+			error_mask |= ERR_CLEANER_0;
+			no_error = 0;
+		}
+		if (!ec_all_op || ec_slaves_responding != ec_slaves) {
+			if (!(error_mask & ERR_BUS_SYSTEM)) {
+				rtapi_print_msg(RTAPI_MSG_ERR, "Bus system error!\n");
+			}
+			error_mask |= ERR_BUS_SYSTEM;
+			no_error = 0;
+		}
+	}
+	
+	// handle error indicator
+	if (error_mask != 0) {
+		error_blink += fperiod;
+		if (error_blink >= ERROR_BLINK_PERIOD) {
+			error_lamp = !error_lamp;
+			error_blink -= ERROR_BLINK_PERIOD;
+		}
+	} else {
+		error_lamp = 0;
+		error_blink = ERROR_BLINK_PERIOD;
+	}
+
+	// handle start/stop
+	if (!no_error || calib_interlock) {
+		automatic_running = 0;
+	} else {
+		automatic_running = belt_stop & (automatic_running | belt_start);
+	}
+
+	// handle water
+	water_on = automatic_running && has_material;
+	water_face_on = water_on && water_face_active && (
+		water_face_ena_0 ||
+		water_face_ena_1 ||
+		water_face_ena_2 ||
+		water_face_ena_3 ||
+		water_face_ena_4 ||
+		water_face_ena_5 ||
+		water_face_ena_6 ||
+		water_face_ena_7 ||
+		water_face_ena_8 ||
+		water_face_ena_9);
+
+	water_bevel_on = water_on && water_bevel_active && (
+		water_bevel_ena_0 ||
+		water_bevel_ena_1 ||
+		water_bevel_ena_2 ||
+		water_bevel_ena_3 ||
+		water_bevel_ena_4 ||
+		water_bevel_ena_5);
+
+	// handle idle timeout
+	if (automatic_running) {
+		if (has_material) {
+			idle_timer = idle_timeout;
+		} else if (idle_timer > 0) {
+			idle_timer -= fperiod;
+		} else {
+			automatic_running = 0;
+		}
+	} else {
+		idle_timer = idle_timeout;
+	}
+
+	bevel_amps_ena = automatic_running || calib_interlock;
+}
+
