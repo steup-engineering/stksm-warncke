@@ -1,0 +1,78 @@
+###########################################################
+#
+# STKSM Hal 
+#
+# Main HAL
+#
+###########################################################
+
+###########################################################
+# Setup
+###########################################################
+
+loadrt trivkins
+loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[TRAJ]AXES
+
+loadusr -W lcec_conf ethercat-conf.xml
+loadrt lcec
+
+loadrt pid names=bevel-0-pid,bevel-1-pid
+
+###########################################################
+# Functions
+###########################################################
+
+addf lcec.read-all servo-thread
+
+addf motion-command-handler servo-thread
+addf motion-controller servo-thread
+
+addf bevel-0-pid.do-pid-calcs servo-thread
+addf bevel-1-pid.do-pid-calcs servo-thread
+
+addf lcec.write-all servo-thread
+
+
+net plc-run <= iocontrol.0.user-enable-out
+net plc-run => iocontrol.0.emc-enable-in
+
+
+
+net bevel-amps-ena <= axis.0.amp-enable-out
+net bevel-0-amp-fault => axis.0.amp-fault-in
+net bevel-0-cmd <= axis.0.motor-pos-cmd
+net bevel-0-fb => axis.0.motor-pos-fb
+
+setp bevel-0-pid.Pgain [BEVEL_0]P
+setp bevel-0-pid.Igain [BEVEL_0]I
+setp bevel-0-pid.Dgain [BEVEL_0]D
+setp bevel-0-pid.FF0 [BEVEL_0]FF0
+setp bevel-0-pid.FF1 [BEVEL_0]FF1
+setp bevel-0-pid.FF2 [BEVEL_0]FF2
+setp bevel-0-pid.deadband [BEVEL_0]DEADBAND
+setp bevel-0-pid.maxoutput [BEVEL_0]MAX_VELOCITY
+
+net bevel-amps-ena => bevel-0-pid.enable
+net bevel-0-cmd => bevel-0-pid.command
+net bevel-0-fb => bevel-0-pid.feedback
+net bevel-0-vel-cmd <= bevel-0-pid.output
+
+
+net bevel-1-amp-fault => axis.1.amp-fault-in
+net bevel-1-cmd <= axis.1.motor-pos-cmd
+net bevel-1-fb => axis.1.motor-pos-fb
+
+setp bevel-1-pid.Pgain [BEVEL_1]P
+setp bevel-1-pid.Igain [BEVEL_1]I
+setp bevel-1-pid.Dgain [BEVEL_1]D
+setp bevel-1-pid.FF0 [BEVEL_1]FF0
+setp bevel-1-pid.FF1 [BEVEL_1]FF1
+setp bevel-1-pid.FF2 [BEVEL_1]FF2
+setp bevel-1-pid.deadband [BEVEL_1]DEADBAND
+setp bevel-1-pid.maxoutput [BEVEL_1]MAX_VELOCITY
+
+net bevel-amps-ena => bevel-1-pid.enable
+net bevel-1-cmd => bevel-1-pid.command
+net bevel-1-fb => bevel-1-pid.feedback
+net bevel-1-vel-cmd <= bevel-1-pid.output
+

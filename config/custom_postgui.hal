@@ -1,0 +1,5 @@
+# Benutzerdefinierte HAL-Anweisungen können nachfolgend angegeben werden
+# Die Befehle in dieser Datei werden nach der AXIS GUI (und PyVCP-Panel) ausgeführt.
+
+net bevel-1-cyl-offset <= pyvcp.bevel-1-cyl-offset
+

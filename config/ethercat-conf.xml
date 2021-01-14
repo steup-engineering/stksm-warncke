@@ -1,0 +1,27 @@
+<masters>
+  <master idx="0" appTimePeriod="1000000" refClockSyncCycles="-1">
+    <slave idx="0" name="S45A1" type="EK1100"/>
+    <slave idx="1" name="S45A2" type="EL7221">
+      <initCmds filename="AM8131-0F20-0000.xml"/>
+      <dcConf assignActivate="700" sync0Cycle="*1" sync0Shift="0" sync1Cycle="*1" sync1Shift="1000"/>
+    </slave>
+    <slave idx="2" name="S45A3" type="EL7221">
+      <initCmds filename="AM8131-0F20-0000.xml"/>
+      <dcConf assignActivate="700" sync0Cycle="*1" sync0Shift="0" sync1Cycle="*1" sync1Shift="1000"/>
+    </slave>
+    <slave idx="3" name="S45A4" type="EL1018"/>
+    <slave idx="4" name="S45A5" type="EL1018"/>
+    <slave idx="5" name="S45A6" type="EL1018"/>
+    <slave idx="6" name="S45A7" type="EL1004"/>
+    <slave idx="7" name="S45A8" type="EL5152"/>
+    <slave idx="8" name="S45A9" type="EL4102"/>
+    <slave idx="9" name="S45A10" type="EL2008"/>
+    <slave idx="10" name="S45A12" type="EL2008"/>
+    <slave idx="11" name="S45A13" type="EL2809"/>
+    <slave idx="12" name="S45A14" type="EL2008"/>
+    <slave idx="13" name="S45A15" type="EL2809"/>
+    <slave idx="14" name="S45A16" type="EL2809"/>
+    <slave idx="15" name="S45A17" type="EL2809"/>
+  </master>
+</masters>
+

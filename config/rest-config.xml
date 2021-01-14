@@ -1,0 +1,139 @@
+<halJson>
+
+  <halJsonRoot path="GuiOutMain">
+    <halJsonPin name="errors" type="u32" dir="in"/>
+    <halJsonPin name="running" type="bit" dir="in"/>
+    <halJsonPin name="feedOverride" type="float" dir="in"/>
+    <halJsonPin name="probePos" type="float" dir="in"/>
+    <halJsonArray name="faces" size="10">
+      <halJsonPin name="active" type="bit" dir="in"/>
+      <halJsonObject name="whm">
+        <halJsonPin name="secs" type="u32" dir="in"/>
+        <halJsonPin name="dcms" type="u32" dir="in"/>
+      </halJsonObject>
+    </halJsonArray>
+    <halJsonArray name="rolls" size="31">
+      <halJsonPin name="active" type="bit" dir="in"/>
+    </halJsonArray>
+    <halJsonArray name="cleaners" size="3">
+      <halJsonPin name="active" type="bit" dir="in"/>
+      <halJsonObject name="whm">
+        <halJsonPin name="secs" type="u32" dir="in"/>
+        <halJsonPin name="dcms" type="u32" dir="in"/>
+      </halJsonObject>
+    </halJsonArray>
+    <halJsonArray name="cleanersMode" size="1">
+      <halJsonPin name="clean" type="bit" dir="in"/>
+      <halJsonPin name="calib" type="bit" dir="in"/>
+    </halJsonArray>
+    <halJsonArray name="unidevs" size="1">
+      <halJsonPin name="selectedPos" type="float" dir="in"/>
+      <halJsonPin name="active" type="bit" dir="in"/>
+      <halJsonObject name="whm">
+        <halJsonPin name="secs" type="u32" dir="in"/>
+        <halJsonPin name="dcms" type="u32" dir="in"/>
+      </halJsonObject>
+    </halJsonArray>
+    <halJsonArray name="bevels" size="2">
+      <halJsonArray name="motors" size="3">
+        <halJsonPin name="active" type="bit" dir="in"/>
+        <halJsonObject name="whm">
+          <halJsonPin name="secs" type="u32" dir="in"/>
+          <halJsonPin name="dcms" type="u32" dir="in"/>
+        </halJsonObject>
+      </halJsonArray>
+      <halJsonPin name="axisPos" type="float" dir="in"/>
+      <halJsonPin name="calibStep" type="u32" dir="in"/>
+      <halJsonPin name="calibError" type="bit" dir="in"/>
+      <halJsonObject name="whm">
+        <halJsonPin name="secs" type="u32" dir="in"/>
+        <halJsonPin name="dcms" type="u32" dir="in"/>
+      </halJsonObject>
+    </halJsonArray>
+    <halJsonObject name="whm">
+      <halJsonPin name="secs" type="u32" dir="in"/>
+      <halJsonPin name="dcms" type="u32" dir="in"/>
+    </halJsonObject>
+    <halJsonObject name="whmJob">
+      <halJsonPin name="secs" type="u32" dir="in"/>
+      <halJsonPin name="dcms" type="u32" dir="in"/>
+    </halJsonObject>
+  </halJsonRoot>
+  
+  <halJsonRoot path="GuiInMain">
+    <halJsonPin name="resetError" type="bit" dir="out"/>
+    <halJsonPin name="beltFeed" type="float" dir="out"/>
+    <halJsonPin name="whmJobReset" type="bit" dir="out"/>
+    <halJsonArray name="faces" size="10">
+      <halJsonPin name="manu" type="bit" dir="out"/>
+      <halJsonPin name="ena" type="bit" dir="out"/>
+    </halJsonArray>
+    <halJsonArray name="rolls" size="31">
+      <halJsonPin name="manu" type="bit" dir="out"/>
+      <halJsonPin name="ena" type="bit" dir="out"/>
+    </halJsonArray>
+    <halJsonArray name="cleaners" size="3">
+      <halJsonPin name="manu" type="bit" dir="out"/>
+      <halJsonPin name="ena" type="bit" dir="out"/>
+    </halJsonArray>
+    <halJsonArray name="cleanersMode" size="1">
+      <halJsonPin name="clean" type="bit" dir="out"/>
+      <halJsonPin name="calib" type="bit" dir="out"/>
+    </halJsonArray>
+    <halJsonArray name="unidevs" size="1">
+      <halJsonPin name="manu" type="bit" dir="out"/>
+      <halJsonPin name="ena" type="bit" dir="out"/>
+      <halJsonPin name="marginStart" type="float" dir="out"/>
+      <halJsonPin name="marginEnd" type="float" dir="out"/>
+    </halJsonArray>
+    <halJsonArray name="bevels" size="2">
+      <halJsonPin name="calibStart" type="bit" dir="out"/>
+      <halJsonPin name="calibCancel" type="bit" dir="out"/>
+      <halJsonArray name="motors" size="3">
+        <halJsonPin name="manu" type="bit" dir="out"/>
+        <halJsonPin name="ena" type="bit" dir="out"/>
+      </halJsonArray>
+      <halJsonPin name="width" type="float" dir="out"/>
+      <halJsonPin name="marginStart" type="float" dir="out"/>
+      <halJsonPin name="marginEnd" type="float" dir="out"/>
+    </halJsonArray>
+  </halJsonRoot>
+
+  <halJsonRoot path="RetainMain">
+    <halJsonArray name="faces" size="10">
+      <halJsonPin name="pos" type="float" dir="io"/>
+      <halJsonPin name="onOffset" type="float" dir="io"/>
+      <halJsonPin name="offOffset" type="float" dir="io"/>
+    </halJsonArray>
+    <halJsonArray name="cleaners" size="3">
+      <halJsonPin name="pos" type="float" dir="io"/>
+      <halJsonPin name="onOffset" type="float" dir="io"/>
+      <halJsonPin name="offOffset" type="float" dir="io"/>
+    </halJsonArray>
+    <halJsonArray name="unidevs" size="1">
+      <halJsonPin name="pos" type="float" dir="io"/>
+      <halJsonPin name="onOffset" type="float" dir="io"/>
+      <halJsonPin name="offOffset" type="float" dir="io"/>
+    </halJsonArray>
+    <halJsonArray name="bevels" size="2">
+      <halJsonPin name="widthOffset" type="float" dir="io"/>
+      <halJsonObject name="posctl">
+        <halJsonPin name="pos" type="float" dir="io"/>
+        <halJsonPin name="onOffset" type="float" dir="io"/>
+        <halJsonPin name="offOffset" type="float" dir="io"/>
+      </halJsonObject>
+      <halJsonArray name="motors" size="3">
+        <halJsonPin name="pos" type="float" dir="io"/>
+        <halJsonPin name="onOffset" type="float" dir="io"/>
+        <halJsonPin name="offOffset" type="float" dir="io"/>
+      </halJsonArray>
+    </halJsonArray>
+    <halJsonArray name="rolls" size="31">
+      <halJsonPin name="pos" type="float" dir="io"/>
+      <halJsonPin name="onOffset" type="float" dir="io"/>
+      <halJsonPin name="offOffset" type="float" dir="io"/>
+    </halJsonArray>
+  </halJsonRoot>
+
+</halJson>
+
