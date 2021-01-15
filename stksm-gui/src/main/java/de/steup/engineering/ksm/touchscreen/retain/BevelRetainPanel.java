@@ -4,7 +4,8 @@
  */
 package de.steup.engineering.ksm.touchscreen.retain;
 
-import de.steup.engineering.ksm.Main;
+import de.steup.engineering.ksm.plc.entities.GuiInBevel;
+import de.steup.engineering.ksm.plc.entities.GuiInStationInterface;
 import de.steup.engineering.ksm.plc.retain.RetainBevel;
 import de.steup.engineering.ksm.plc.retain.RetainFace;
 import de.steup.engineering.ksm.touchscreen.dialogs.FloatMouseListener;
@@ -33,7 +34,7 @@ public class BevelRetainPanel extends JPanel {
 
     private static final int TEXT_FIELD_COLUMNS = 10;
 
-    public BevelRetainPanel(Window owner, String title, final RetainBevel retainData) {
+    public BevelRetainPanel(Window owner, String title, final RetainBevel retainData, GuiInBevel guiInData, int motorCount) {
 
         BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
         setLayout(layout);
@@ -68,10 +69,11 @@ public class BevelRetainPanel extends JPanel {
         add(new PosOffsetRetainPanel(owner, "Positionierung", retainData.getPosctl()));
 
         RetainFace motors[] = retainData.getMotors();
-        for (int i = 0; i < Main.BEVEL_MOTOR_COUNT; i++) {
+        GuiInStationInterface guiMotors[] = guiInData.getMotors();
+        for (int i = 0; i < motorCount; i++) {
             add(new PosOffsetRetainPanel(
                     owner,
-                    String.format("Motor %d", i + 1),
+                    RetainDialog.getCaption(i, "Motor", guiMotors[i]),
                     motors[i]));
         }
 

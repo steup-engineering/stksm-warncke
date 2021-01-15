@@ -30,17 +30,20 @@ public class PosOffsetRetainPanel extends JPanel {
 
     private static final int TEXT_FIELD_COLUMNS = 10;
 
+    protected final GridBagConstraints labelConst;
+    protected final GridBagConstraints textConst;
+
     public PosOffsetRetainPanel(Window owner, String title, final PosOffsetInterface retainData) {
         GridBagLayout paramLayout = new GridBagLayout();
         setLayout(paramLayout);
 
-        GridBagConstraints labelConst = new GridBagConstraints();
+        labelConst = new GridBagConstraints();
         labelConst.anchor = GridBagConstraints.LINE_START;
         labelConst.fill = GridBagConstraints.HORIZONTAL;
         labelConst.gridx = 0;
         labelConst.gridy = 0;
 
-        GridBagConstraints textConst = new GridBagConstraints();
+        textConst = new GridBagConstraints();
         textConst.anchor = GridBagConstraints.LINE_END;
         textConst.fill = GridBagConstraints.HORIZONTAL;
         textConst.gridx = 1;
@@ -76,7 +79,7 @@ public class PosOffsetRetainPanel extends JPanel {
         setBorder(BorderFactory.createTitledBorder(title));
     }
 
-    private JTextField addParamItem(Window owner, GridBagConstraints labelConst, GridBagConstraints textConst, String labelText, double min, double max, double deflt, DecimalFormat format, FloatSetter setter) {
+    protected JTextField addParamItem(Window owner, GridBagConstraints labelConst, GridBagConstraints textConst, String labelText, double min, double max, double deflt, DecimalFormat format, FloatSetter setter) {
         JLabel label = new JLabel(labelText + ": ");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
         add(label, labelConst);
