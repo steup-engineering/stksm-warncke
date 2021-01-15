@@ -12,7 +12,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import de.steup.engineering.ksm.Main;
+import java.awt.Window;
 import java.awt.Color;
 
 /**
@@ -34,8 +34,8 @@ public abstract class NumDialog extends JDialog implements DialogActionListener 
     protected JTextField inputField;
     protected JLabel statusLabel;
 
-    public NumDialog(String title, JTextField dest) {
-        super(Main.getMainFrame(), title, true);
+    public NumDialog(Window owner, String title, JTextField dest) {
+        super(owner, title, ModalityType.APPLICATION_MODAL);
         this.dest = dest;
 
         setResizable(false);
@@ -75,7 +75,7 @@ public abstract class NumDialog extends JDialog implements DialogActionListener 
         pane.add(statusLabel, BorderLayout.PAGE_END);
 
         setSize(400, 400);
-        setLocationRelativeTo(Main.getMainFrame());
+        setLocationRelativeTo(owner);
     }
 
     @Override

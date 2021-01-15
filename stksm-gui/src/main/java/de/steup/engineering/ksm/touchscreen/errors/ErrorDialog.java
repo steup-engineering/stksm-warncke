@@ -20,7 +20,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import de.steup.engineering.ksm.Main;
+import java.awt.Window;
 
 /**
  *
@@ -67,16 +67,15 @@ public class ErrorDialog extends JDialog {
         }
     };
 
-    public static void showDialog() {
-        ErrorDialog dlg = new ErrorDialog();
+    public static void showDialog(Window owner) {
+        ErrorDialog dlg = new ErrorDialog(owner);
         MachineThread.getInstance().addUpdateListener(dlg.updateListener);
-        dlg.setAlwaysOnTop(true);
         dlg.setVisible(true);
         MachineThread.getInstance().removeUpdateListener(dlg.updateListener);
     }
 
-    public ErrorDialog() {
-        super(Main.getMainFrame(), "Fehlerstatus", true);
+    public ErrorDialog(Window owner) {
+        super(owner, "Fehlerstatus", ModalityType.APPLICATION_MODAL);
 
         super.setResizable(false);
 
@@ -140,6 +139,6 @@ public class ErrorDialog extends JDialog {
 
         super.setSize(400, 500);
 
-        super.setLocationRelativeTo(Main.getMainFrame());
+        super.setLocationRelativeTo(owner);
     }
 }

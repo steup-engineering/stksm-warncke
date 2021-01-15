@@ -4,6 +4,7 @@
  */
 package de.steup.engineering.ksm.touchscreen.dialogs;
 
+import java.awt.Window;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JTextField;
@@ -14,13 +15,15 @@ import javax.swing.JTextField;
  */
 public class FloatMouseListener implements MouseListener {
 
+    private final Window owner;
     private final String title;
     private final JTextField field;
     private double min = Double.NEGATIVE_INFINITY;
     private double max = Double.POSITIVE_INFINITY;
     private final FloatSetter setter;
 
-    public FloatMouseListener(String title, JTextField field, double min, double max, FloatSetter setter) {
+    public FloatMouseListener(Window owner, String title, JTextField field, double min, double max, FloatSetter setter) {
+        this.owner = owner;
         this.title = title;
         this.field = field;
         this.min = min;
@@ -46,7 +49,7 @@ public class FloatMouseListener implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        FloatDialog.showDialog(title, field, min, max, setter);
+        FloatDialog.showDialog(owner, title, field, min, max, setter);
     }
 
     @Override

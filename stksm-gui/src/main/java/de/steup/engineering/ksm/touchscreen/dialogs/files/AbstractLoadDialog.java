@@ -1,9 +1,9 @@
 package de.steup.engineering.ksm.touchscreen.dialogs.files;
 
-import de.steup.engineering.ksm.Main;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -28,8 +28,8 @@ public abstract class AbstractLoadDialog extends JDialog {
     private final JPanel filesPanel;
     private final String acceptedEnding = ".xml";
 
-    public AbstractLoadDialog(PathConfig pathConfig) {
-        super(Main.getMainFrame(), pathConfig.getDesc() + " laden", true);
+    public AbstractLoadDialog(Window owner, PathConfig pathConfig) {
+        super(owner, pathConfig.getDesc() + " laden", ModalityType.APPLICATION_MODAL);
         this.pathConfig = pathConfig;
 
         super.setResizable(false);
@@ -77,7 +77,7 @@ public abstract class AbstractLoadDialog extends JDialog {
 
         super.setSize(700, 700);
 
-        super.setLocationRelativeTo(Main.getMainFrame());
+        super.setLocationRelativeTo(owner);
 
         loadDirectory(pathConfig.getLastPath());
     }

@@ -4,6 +4,7 @@
  */
 package de.steup.engineering.ksm.touchscreen.dialogs;
 
+import java.awt.Window;
 import javax.swing.JTextField;
 
 /**
@@ -17,14 +18,13 @@ public class IntegerDialog extends NumDialog {
     private int min = Integer.MIN_VALUE;
     private int max = Integer.MAX_VALUE;
 
-    public static void showDialog(String title, JTextField dest, int min, int max) {
-        NumDialog dlg = new IntegerDialog(title, dest, min, max);
-        dlg.setAlwaysOnTop(true);
+    public static void showDialog(Window owner, String title, JTextField dest, int min, int max) {
+        NumDialog dlg = new IntegerDialog(owner, title, dest, min, max);
         dlg.setVisible(true);
     }
 
-    public IntegerDialog(String title, JTextField dest, int min, int max) {
-        super(title, dest);
+    public IntegerDialog(Window owner, String title, JTextField dest, int min, int max) {
+        super(owner, title, dest);
         this.min = min;
         this.max = max;
     }

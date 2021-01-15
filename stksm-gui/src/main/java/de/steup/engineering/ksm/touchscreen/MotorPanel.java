@@ -13,6 +13,7 @@ import de.steup.engineering.ksm.touchscreen.dialogs.StringMouseListener;
 import de.steup.engineering.ksm.touchscreen.dialogs.StringSetter;
 import de.steup.engineering.ksm.touchscreen.util.MotorData;
 import java.awt.Color;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -37,7 +38,7 @@ public class MotorPanel extends MotorBasePanel implements UpdatePanelInterface {
     private final List<MotorData> motors;
     private Color buttonDefaultColor = null;
 
-    public MotorPanel(String title, List<MotorData> motors, boolean hasLabel, boolean hasEnable) {
+    public MotorPanel(Window owner, String title, List<MotorData> motors, boolean hasLabel, boolean hasEnable) {
         super(title, motors.size());
 
         motors = new ArrayList<>(motors);
@@ -62,7 +63,7 @@ public class MotorPanel extends MotorBasePanel implements UpdatePanelInterface {
                             motor.setCaption(value);
                         }
                     };
-                    nt.addMouseListener(new StringMouseListener("Motor Name", nt, 1, 16, setter));
+                    nt.addMouseListener(new StringMouseListener(owner, "Motor Name", nt, 1, 16, setter));
                 }
                 captionText.add(nt);
                 add(nt);

@@ -5,7 +5,6 @@
  */
 package de.steup.engineering.ksm.touchscreen.dialogs.files;
 
-import de.steup.engineering.ksm.Main;
 import de.steup.engineering.ksm.touchscreen.dialogs.AlphaDialog;
 import de.steup.engineering.ksm.touchscreen.dialogs.StringSetter;
 import java.awt.BorderLayout;
@@ -13,6 +12,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -46,12 +46,11 @@ public abstract class AbstractSaveDialog extends JDialog {
     private final JButton delDirButton;
     private final String acceptedEnding = ".xml";
 
-    public AbstractSaveDialog(PathConfig pathConfig) {
-        super(Main.getMainFrame(), pathConfig.getDesc() + " laden", true);
+    public AbstractSaveDialog(Window owner, PathConfig pathConfig) {
+        super(owner, pathConfig.getDesc() + " laden", ModalityType.APPLICATION_MODAL);
         this.pathConfig = pathConfig;
 
         super.setResizable(false);
-
         super.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         Container pane = super.getContentPane();
@@ -95,7 +94,7 @@ public abstract class AbstractSaveDialog extends JDialog {
 
                     @Override
                     public void run() {
-                        AlphaDialog.showDialog("Neue Datei anlegen", null, 1, 40, setter);
+                        AlphaDialog.showDialog(AbstractSaveDialog.this, "Neue Datei anlegen", null, 1, 40, setter);
                     }
                 });
             }
@@ -138,7 +137,7 @@ public abstract class AbstractSaveDialog extends JDialog {
 
                     @Override
                     public void run() {
-                        AlphaDialog.showDialog("Neues Verzeichnis anlegen", null, 1, 40, setter);
+                        AlphaDialog.showDialog(AbstractSaveDialog.this, "Neues Verzeichnis anlegen", null, 1, 40, setter);
                     }
                 });
             }
@@ -171,7 +170,7 @@ public abstract class AbstractSaveDialog extends JDialog {
 
         super.setSize(700, 700);
 
-        super.setLocationRelativeTo(Main.getMainFrame());
+        super.setLocationRelativeTo(owner);
 
         loadDirectory(pathConfig.getLastPath());
     }
@@ -282,7 +281,7 @@ public abstract class AbstractSaveDialog extends JDialog {
         }
         if (selectedFile.exists()) {
             if (JOptionPane.showConfirmDialog(
-                    Main.getMainFrame(),
+                    this,
                     String.format("Soll die Datai %s wirklich überschrieben werden?", selectedFile.getName()),
                     "Sicherheitsabfrage",
                     JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
@@ -301,7 +300,7 @@ public abstract class AbstractSaveDialog extends JDialog {
         }
 
         if (JOptionPane.showConfirmDialog(
-                Main.getMainFrame(),
+                this,
                 String.format("Soll die Datai %s wirklich gelöscht werden?", selectedFile.getName()),
                 "Sicherheitsabfrage",
                 JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
@@ -309,7 +308,8 @@ public abstract class AbstractSaveDialog extends JDialog {
         }
 
         if (!selectedFile.delete()) {
-            JOptionPane.showMessageDialog(Main.getMainFrame(),
+            JOptionPane.showMessageDialog(
+                    this,
                     String.format("Datei %s kann nicht gelöscht werden.", selectedFile.getName()),
                     "Faler bei Dateioperation",
                     JOptionPane.ERROR_MESSAGE);
@@ -326,7 +326,8 @@ public abstract class AbstractSaveDialog extends JDialog {
 
         File newDir = new File(currentPath, name);
         if (!newDir.mkdir()) {
-            JOptionPane.showMessageDialog(Main.getMainFrame(),
+            JOptionPane.showMessageDialog(
+                    this,
                     String.format("Verzeichnis %s kann nicht angelegt werden.", newDir.getName()),
                     "Faler bei Dateioperation",
                     JOptionPane.ERROR_MESSAGE);
@@ -342,7 +343,7 @@ public abstract class AbstractSaveDialog extends JDialog {
         }
 
         if (JOptionPane.showConfirmDialog(
-                Main.getMainFrame(),
+                this,
                 String.format("Soll das Verzeichnis %s samt Inhalt wirklich gelöscht werden?", currentPath.getName()),
                 "Sicherheitsabfrage",
                 JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
@@ -350,7 +351,8 @@ public abstract class AbstractSaveDialog extends JDialog {
         }
 
         if (!deleteRecursive(currentPath)) {
-            JOptionPane.showMessageDialog(Main.getMainFrame(),
+            JOptionPane.showMessageDialog(
+                    this,
                     String.format("Verzeichnis %s kann nicht gelöscht werden.", currentPath.getName()),
                     "Faler bei Dateioperation",
                     JOptionPane.ERROR_MESSAGE);

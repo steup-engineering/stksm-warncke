@@ -4,11 +4,11 @@
  */
 package de.steup.engineering.ksm.process;
 
-import de.steup.engineering.ksm.Main;
 import de.steup.engineering.ksm.plc.entities.GuiInBevel;
 import de.steup.engineering.ksm.plc.entities.GuiInMain;
 import de.steup.engineering.ksm.plc.entities.GuiInStation;
 import de.steup.engineering.ksm.plc.entities.GuiInUnidev;
+import java.awt.Window;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -27,14 +27,14 @@ public class PersUtil {
     private final Log logger
             = LogFactory.getLog(PersUtil.class.toString());
 
-    public PersMainEnt loadProcess(File file) {
+    public PersMainEnt loadProcess(Window owner, File file) {
         try {
             JAXBContext context = JAXBContext.newInstance(PersMainEnt.class);
             Unmarshaller u = context.createUnmarshaller();
             return (PersMainEnt) u.unmarshal(file);
         } catch (Exception ex) {
             logger.error("Fehler beim laden der Prozessdaten", ex);
-            JOptionPane.showMessageDialog(Main.getMainFrame(),
+            JOptionPane.showMessageDialog(owner,
                     String.format("Datei %s kann nicht gelesen werden.", file.getName()),
                     "Fehler beim Laden",
                     JOptionPane.ERROR_MESSAGE);
@@ -42,7 +42,7 @@ public class PersUtil {
         }
     }
 
-    public void saveProcess(PersMainEnt process, File file) {
+    public void saveProcess(Window owner, PersMainEnt process, File file) {
         try {
             JAXBContext context = JAXBContext.newInstance(PersMainEnt.class);
             Marshaller m = context.createMarshaller();
@@ -50,7 +50,7 @@ public class PersUtil {
             m.marshal(process, file);
         } catch (Exception ex) {
             logger.error("Fehler beim speichern der Prozessdaten", ex);
-            JOptionPane.showMessageDialog(Main.getMainFrame(),
+            JOptionPane.showMessageDialog(owner,
                     String.format("Datei %s kann nicht geschrieben werden.", file.getName()),
                     "Fehler beim Speichern",
                     JOptionPane.ERROR_MESSAGE);
@@ -144,8 +144,8 @@ public class PersUtil {
         }
     }
 
-    public void loadProcess(GuiInMain plcData, File file) {
-        PersMainEnt process = loadProcess(file);
+    public void loadProcess(Window owner, GuiInMain plcData, File file) {
+        PersMainEnt process = loadProcess(owner, file);
         if (process == null) {
             return;
         }
@@ -158,7 +158,7 @@ public class PersUtil {
         plcData.setParamSetName(process.getParamSetName());
     }
 
-    public void saveProcess(GuiInMain plcData, File file) {
+    public void saveProcess(Window owner, GuiInMain plcData, File file) {
         PersMainEnt process = new PersMainEnt();
         process.setBeltFeed(plcData.getBeltFeed());
         process.setFaces(motorsPlcToPers(plcData.getFaces()));
@@ -166,6 +166,6 @@ public class PersUtil {
         process.setUnidevs(unidevsPlcToPers(plcData.getUnidevs()));
         process.setBevels(bevelsPlcToPers(plcData.getBevels()));
         process.setParamSetName(plcData.getParamSetName());
-        saveProcess(process, file);
+        saveProcess(owner, process, file);
     }
 }

@@ -4,6 +4,7 @@
  */
 package de.steup.engineering.ksm.touchscreen.dialogs;
 
+import java.awt.Window;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JTextField;
@@ -14,13 +15,15 @@ import javax.swing.JTextField;
  */
 public class FilenameMouseListener implements MouseListener {
 
+    private final Window owner;
     private final String title;
     private final JTextField field;
     private final int minLen;
     private final int maxLen;
     private final StringSetter setter;
 
-    public FilenameMouseListener(String title, JTextField field, int minLen, int maxLen, StringSetter setter) {
+    public FilenameMouseListener(Window owner, String title, JTextField field, int minLen, int maxLen, StringSetter setter) {
+        this.owner = owner;
         this.title = title;
         this.field = field;
         this.minLen = minLen;
@@ -50,7 +53,7 @@ public class FilenameMouseListener implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        AlphaDialog.showDialog(title, field, minLen, maxLen, setter);
+        AlphaDialog.showDialog(owner, title, field, minLen, maxLen, setter);
     }
 
     @Override

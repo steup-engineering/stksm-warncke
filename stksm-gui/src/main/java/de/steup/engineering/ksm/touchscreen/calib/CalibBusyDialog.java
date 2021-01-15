@@ -6,7 +6,7 @@ package de.steup.engineering.ksm.touchscreen.calib;
 
 import de.steup.engineering.ksm.plc.entities.GuiCalibInterface;
 import java.awt.Container;
-import java.awt.Frame;
+import java.awt.Window;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -19,8 +19,8 @@ public class CalibBusyDialog extends JDialog {
 
     private static final long serialVersionUID = 6702791160710087514L;
 
-    public CalibBusyDialog(Frame appFrame, String title, final GuiCalibInterface data) {
-        super(appFrame, title, true);
+    public CalibBusyDialog(Window owner, String title, final GuiCalibInterface data) {
+        super(owner, title, ModalityType.APPLICATION_MODAL);
 
         setResizable(false);
 
@@ -34,6 +34,6 @@ public class CalibBusyDialog extends JDialog {
 
         setSize(250, 100);
 
-        setLocationRelativeTo(appFrame);
+        setLocationRelativeTo(owner);
     }
 }

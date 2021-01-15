@@ -18,6 +18,7 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -37,6 +38,7 @@ public class ParamSetNamePanel extends JPanel implements UpdatePanelInterface {
 
     private final Log logger = LogFactory.getLog(ParamSetNamePanel.class.toString());
 
+    private final Window owner;
     private final JTextField paramNameField;
 
     private class ParamGridBagConstraints extends GridBagConstraints {
@@ -58,8 +60,9 @@ public class ParamSetNamePanel extends JPanel implements UpdatePanelInterface {
 
     }
 
-    public ParamSetNamePanel(String title) {
+    public ParamSetNamePanel(Window owner, String title) {
         super();
+        this.owner = owner;
 
         setBorder(BorderFactory.createTitledBorder(title));
 
@@ -84,7 +87,7 @@ public class ParamSetNamePanel extends JPanel implements UpdatePanelInterface {
         paramNameField.setEditable(false);
         paramNameField.setBackground(Color.WHITE);
         this.add(paramNameField, new ParamGridBagConstraints(1.0, GridBagConstraints.HORIZONTAL));
-        FileMouseListener lookupListener = new FileMouseListener(Main.getParamPath(), paramNameSetter);
+        FileMouseListener lookupListener = new FileMouseListener(owner, Main.getParamPath(), paramNameSetter);
         paramNameField.addMouseListener(lookupListener);
 
         final JButton selectButton = new JButton("Auswahl ...");
@@ -124,13 +127,13 @@ public class ParamSetNamePanel extends JPanel implements UpdatePanelInterface {
         if (!file.canRead()) {
             String msg = String.format("Parameterdatei %s kann nicht gelesen werden.", file.getName());
             logger.error(msg);
-            JOptionPane.showMessageDialog(Main.getMainFrame(),
+            JOptionPane.showMessageDialog(owner,
                     msg, "Fehler beim Laden", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         PersUtil persUtil = new PersUtil();
-        RetainMain retainData = persUtil.loadRetain(file);
+        RetainMain retainData = persUtil.loadRetain(owner, file);
         if (retainData == null) {
             return false;
         }
@@ -143,7 +146,7 @@ public class ParamSetNamePanel extends JPanel implements UpdatePanelInterface {
         try {
             mach.writeRetainData(retainData);
         } catch (PlcRestException ex) {
-            JOptionPane.showMessageDialog(Main.getMainFrame(), String.format("ADS-Fehler %d (%s).", ex.getStatus(), ex.getMessage()), "Verbindungsfehler", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(owner, String.format("ADS-Fehler %d (%s).", ex.getStatus(), ex.getMessage()), "Verbindungsfehler", JOptionPane.ERROR_MESSAGE);
         }
 
         return true;

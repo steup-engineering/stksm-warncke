@@ -13,6 +13,7 @@ import de.steup.engineering.ksm.touchscreen.dialogs.FloatSetter;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class DevPanel extends JPanel implements UpdatePanelInterface {
     private JTextField margStartText;
     private JTextField margEndText;
 
-    public DevPanel(String title, List<MotorData> motors, ActionListener calibAction, String distLabel, boolean hasMotorLabel, final GuiInDevInterface devData) {
+    public DevPanel(Window owner, String title, List<MotorData> motors, ActionListener calibAction, String distLabel, boolean hasMotorLabel, final GuiInDevInterface devData) {
         super();
         setBorder(BorderFactory.createTitledBorder(title));
 
@@ -49,7 +50,7 @@ public class DevPanel extends JPanel implements UpdatePanelInterface {
         setLayout(layout);
 
         if (motors != null) {
-            MotorPanel motorPanel = new MotorPanel(null, motors, hasMotorLabel, true);
+            MotorPanel motorPanel = new MotorPanel(owner, null, motors, hasMotorLabel, true);
             updatePanels.add(motorPanel);
             add(motorPanel);
         }
@@ -87,7 +88,7 @@ public class DevPanel extends JPanel implements UpdatePanelInterface {
                     }
                 }
             };
-            distText = addParamItem(paramPanel, labelConst, textConst, distLabel, 0.0, 30.0, 0.0, distSetter);
+            distText = addParamItem(owner, paramPanel, labelConst, textConst, distLabel, 0.0, 30.0, 0.0, distSetter);
         }
 
         FloatSetter margStartSetter = new FloatSetter() {
@@ -101,7 +102,7 @@ public class DevPanel extends JPanel implements UpdatePanelInterface {
                 }
             }
         };
-        margStartText = addParamItem(paramPanel, labelConst, textConst, "Rand links [mm]", 0.0, 4000.0, 0.0, margStartSetter);
+        margStartText = addParamItem(owner, paramPanel, labelConst, textConst, "Rand links [mm]", 0.0, 4000.0, 0.0, margStartSetter);
 
         FloatSetter margEndSetter = new FloatSetter() {
 
@@ -114,7 +115,7 @@ public class DevPanel extends JPanel implements UpdatePanelInterface {
                 }
             }
         };
-        margEndText = addParamItem(paramPanel, labelConst, textConst, "Rand rechts [mm]", 0.0, 4000.0, 0.0, margEndSetter);
+        margEndText = addParamItem(owner, paramPanel, labelConst, textConst, "Rand rechts [mm]", 0.0, 4000.0, 0.0, margEndSetter);
 
         paramPanel.setBorder(BorderFactory.createEtchedBorder());
 
@@ -129,7 +130,7 @@ public class DevPanel extends JPanel implements UpdatePanelInterface {
         }
     }
 
-    private JTextField addParamItem(JPanel panel, GridBagConstraints labelConst, GridBagConstraints textConst, String labelText, double min, double max, double deflt, FloatSetter setter) {
+    private JTextField addParamItem(Window owner, JPanel panel, GridBagConstraints labelConst, GridBagConstraints textConst, String labelText, double min, double max, double deflt, FloatSetter setter) {
         JLabel label = new JLabel(labelText + ": ");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
         panel.add(label, labelConst);
@@ -139,7 +140,7 @@ public class DevPanel extends JPanel implements UpdatePanelInterface {
         textField.setEditable(false);
         textField.setBackground(Color.WHITE);
         textField.setText(Double.toString(deflt));
-        textField.addMouseListener(new FloatMouseListener(labelText, textField, min, max, setter));
+        textField.addMouseListener(new FloatMouseListener(owner, labelText, textField, min, max, setter));
         panel.add(textField, textConst);
         textConst.gridy++;
 

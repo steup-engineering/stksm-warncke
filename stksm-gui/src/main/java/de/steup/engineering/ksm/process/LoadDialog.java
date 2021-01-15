@@ -9,6 +9,7 @@ import de.steup.engineering.ksm.plc.rest.MachineThread;
 import de.steup.engineering.ksm.plc.entities.GuiInMain;
 import de.steup.engineering.ksm.touchscreen.UpdatePanelInterface;
 import de.steup.engineering.ksm.touchscreen.dialogs.files.AbstractLoadDialog;
+import java.awt.Window;
 import java.io.File;
 import javax.swing.SwingUtilities;
 
@@ -23,15 +24,14 @@ public class LoadDialog extends AbstractLoadDialog {
     private final PersUtil persUtil;
     private final UpdatePanelInterface loadUpdater;
 
-    public static void showDialog(PersUtil persUtil, UpdatePanelInterface loadUpdater) {
+    public static void showDialog(Window owner, PersUtil persUtil, UpdatePanelInterface loadUpdater) {
 
-        LoadDialog dlg = new LoadDialog(persUtil, loadUpdater);
-        dlg.setAlwaysOnTop(true);
+        LoadDialog dlg = new LoadDialog(owner, persUtil, loadUpdater);
         dlg.setVisible(true);
     }
 
-    public LoadDialog(PersUtil persUtil, UpdatePanelInterface loadUpdater) {
-        super(Main.getProcessPath());
+    private LoadDialog(Window owner, PersUtil persUtil, UpdatePanelInterface loadUpdater) {
+        super(owner, Main.getProcessPath());
 
         this.persUtil = persUtil;
         this.loadUpdater = loadUpdater;
@@ -47,7 +47,7 @@ public class LoadDialog extends AbstractLoadDialog {
                 String fn = file.getName();
 
                 synchronized (data) {
-                    persUtil.loadProcess(data, file);
+                    persUtil.loadProcess(LoadDialog.this, data, file);
 
                     data.setProcessName(fn.substring(0, fn.length() - 4));
                 }

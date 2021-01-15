@@ -12,8 +12,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import de.steup.engineering.ksm.Main;
 import java.awt.Color;
+import java.awt.Window;
 
 /**
  *
@@ -84,14 +84,13 @@ public class AlphaDialog extends JDialog implements DialogActionListener {
     private final StringSetter setter;
     private final int minLen;
 
-    public static void showDialog(String title, JTextField dest, int minLen, int maxLen, StringSetter setter) {
-        AlphaDialog dlg = new AlphaDialog(title, dest, minLen, maxLen, setter);
-        dlg.setAlwaysOnTop(true);
+    public static void showDialog(Window owner, String title, JTextField dest, int minLen, int maxLen, StringSetter setter) {
+        AlphaDialog dlg = new AlphaDialog(owner, title, dest, minLen, maxLen, setter);
         dlg.setVisible(true);
     }
 
-    public AlphaDialog(String title, JTextField dest, int minLen, int maxLen, StringSetter setter) {
-        super(Main.getMainFrame(), title, true);
+    public AlphaDialog(Window owner, String title, JTextField dest, int minLen, int maxLen, StringSetter setter) {
+        super(owner, title, ModalityType.APPLICATION_MODAL);
         this.dest = dest;
         this.setter = setter;
         this.minLen = minLen;
@@ -133,7 +132,7 @@ public class AlphaDialog extends JDialog implements DialogActionListener {
         pane.add(statusLabel, BorderLayout.PAGE_END);
 
         super.setSize(900, 400);
-        super.setLocationRelativeTo(Main.getMainFrame());
+        super.setLocationRelativeTo(owner);
     }
 
     @Override

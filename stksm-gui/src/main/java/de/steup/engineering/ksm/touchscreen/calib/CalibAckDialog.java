@@ -10,8 +10,8 @@ import de.steup.engineering.ksm.plc.entities.GuiInMain;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -33,8 +33,8 @@ public class CalibAckDialog extends JDialog {
     private final JLabel errorLabel;
     private final JButton contButton;
 
-    public CalibAckDialog(Frame appFrame, String title, final GuiCalibInterface data) {
-        super(appFrame, title, true);
+    public CalibAckDialog(Window owner, String title, final GuiCalibInterface data) {
+        super(owner, title, ModalityType.APPLICATION_MODAL);
 
         setResizable(false);
 
@@ -97,7 +97,7 @@ public class CalibAckDialog extends JDialog {
 
         setSize(250, 100);
 
-        setLocationRelativeTo(appFrame);
+        setLocationRelativeTo(owner);
     }
 
     public void setCalibError(boolean error) {

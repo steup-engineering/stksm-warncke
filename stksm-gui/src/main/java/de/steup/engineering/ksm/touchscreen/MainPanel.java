@@ -6,6 +6,7 @@ package de.steup.engineering.ksm.touchscreen;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -35,7 +36,7 @@ public class MainPanel extends JPanel implements UpdatePanelInterface {
 
     private final List<UpdatePanelInterface> updatePanels = new ArrayList<>();
 
-    public MainPanel() {
+    public MainPanel(Window owner) {
         super();
         setPreferredSize(PREFERED_SIZE);
 
@@ -46,9 +47,9 @@ public class MainPanel extends JPanel implements UpdatePanelInterface {
 
         HeaderPanel headerPanel = new HeaderPanel();
         updatePanels.add(headerPanel);
-        ProcessPanel procPanel = new ProcessPanel();
+        ProcessPanel procPanel = new ProcessPanel(owner);
         updatePanels.add(procPanel);
-        FooterPanel footerPanel = new FooterPanel(this);
+        FooterPanel footerPanel = new FooterPanel(owner, this);
 
         add(headerPanel, BorderLayout.PAGE_START);
         add(procPanel, BorderLayout.CENTER);

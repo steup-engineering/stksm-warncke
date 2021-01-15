@@ -4,6 +4,7 @@
  */
 package de.steup.engineering.ksm.touchscreen.dialogs;
 
+import java.awt.Window;
 import javax.swing.JTextField;
 
 /**
@@ -18,14 +19,13 @@ public class FloatDialog extends NumDialog {
     private double max = Double.POSITIVE_INFINITY;
     private FloatSetter setter = null;
 
-    public static void showDialog(String title, JTextField dest, double min, double max, FloatSetter setter) {
-        NumDialog dlg = new FloatDialog(title, dest, min, max, setter);
-        dlg.setAlwaysOnTop(true);
+    public static void showDialog(Window owner, String title, JTextField dest, double min, double max, FloatSetter setter) {
+        NumDialog dlg = new FloatDialog(owner, title, dest, min, max, setter);
         dlg.setVisible(true);
     }
 
-    public FloatDialog(String title, JTextField dest, double min, double max, FloatSetter setter) {
-        super(title, dest);
+    public FloatDialog(Window owner, String title, JTextField dest, double min, double max, FloatSetter setter) {
+        super(owner, title, dest);
         this.min = min;
         this.max = max;
         this.setter = setter;

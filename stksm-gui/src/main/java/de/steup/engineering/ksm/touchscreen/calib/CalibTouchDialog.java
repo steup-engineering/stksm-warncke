@@ -10,8 +10,8 @@ import de.steup.engineering.ksm.plc.entities.GuiInMain;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -31,8 +31,8 @@ public class CalibTouchDialog extends JDialog {
 
     private final JLabel errorLabel;
 
-    public CalibTouchDialog(Frame appFrame, String title, final GuiCalibInterface data) {
-        super(appFrame, title, true);
+    public CalibTouchDialog(Window owner, String title, final GuiCalibInterface data) {
+        super(owner, title, ModalityType.APPLICATION_MODAL);
 
         setResizable(false);
 
@@ -95,7 +95,7 @@ public class CalibTouchDialog extends JDialog {
 
         setSize(450, 120);
 
-        setLocationRelativeTo(appFrame);
+        setLocationRelativeTo(owner);
     }
 
     public void setCalibError(boolean error) {
