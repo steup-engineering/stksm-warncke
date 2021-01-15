@@ -7,9 +7,10 @@ package de.steup.engineering.ksm.touchscreen.dialogs;
 import de.steup.engineering.ksm.touchscreen.dialogs.buttons.SignButton;
 import de.steup.engineering.ksm.touchscreen.dialogs.buttons.OkButton;
 import de.steup.engineering.ksm.touchscreen.dialogs.buttons.CancelButton;
-import de.steup.engineering.ksm.touchscreen.dialogs.buttons.DelButton;
 import de.steup.engineering.ksm.touchscreen.dialogs.buttons.CharButton;
 import de.steup.engineering.ksm.touchscreen.dialogs.buttons.ClearButton;
+import de.steup.engineering.ksm.touchscreen.dialogs.buttons.DecimalButton;
+import de.steup.engineering.ksm.touchscreen.dialogs.buttons.DelButton;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
@@ -18,8 +19,9 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.Window;
 import java.awt.Color;
+import java.awt.Window;
+import java.text.DecimalFormatSymbols;
 
 /**
  *
@@ -33,14 +35,14 @@ public abstract class NumDialog extends JDialog implements DialogActionListener 
         {new CharButton("7", '7'), new CharButton("8", '8'), new CharButton("9", '9'), new DelButton("löschen")},
         {new CharButton("4", '4'), new CharButton("5", '5'), new CharButton("6", '6'), new ClearButton("leeren")},
         {new CharButton("1", '1'), new CharButton("2", '2'), new CharButton("3", '3'), new CancelButton("Abbruch")},
-        {new CharButton("0", '0'), new CharButton(".", '.'), new SignButton("+/-"), new OkButton("OK")}
+        {new CharButton("0", '0'), new DecimalButton("."), new SignButton("+/-"), new OkButton("OK")}
     };
 
     protected JTextField dest;
     protected JTextField inputField;
     protected JLabel statusLabel;
 
-    public NumDialog(Window owner, String title, JTextField dest) {
+    public NumDialog(Window owner, String title, JTextField dest, DecimalFormatSymbols decimalFormatSymbols) {
         super(owner, title, ModalityType.APPLICATION_MODAL);
         this.dest = dest;
 
@@ -67,7 +69,7 @@ public abstract class NumDialog extends JDialog implements DialogActionListener 
         for (KeyButtonAction[] BUTTON_ACTIONS1 : BUTTON_ACTIONS) {
             for (KeyButtonAction action : BUTTON_ACTIONS1) {
                 JButton touchButton = new JButton(action.getCaption());
-                KeyButtonListener touchListener = new KeyButtonListener(this, action);
+                KeyButtonListener touchListener = new KeyButtonListener(this, action, decimalFormatSymbols);
                 touchButton.addActionListener(touchListener);
                 buttonPanel.add(touchButton);
             }

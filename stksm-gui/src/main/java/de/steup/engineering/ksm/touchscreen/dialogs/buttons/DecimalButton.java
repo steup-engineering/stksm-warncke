@@ -12,15 +12,17 @@ import java.text.DecimalFormatSymbols;
  *
  * @author sascha
  */
-public class OkButton extends KeyButtonAction {
+public class DecimalButton extends KeyButtonAction {
 
-    public OkButton(String caption) {
+    public DecimalButton(String caption) {
         super(caption);
     }
 
     @Override
     public String execute(DecimalFormatSymbols decimalFormatSymbols, DialogActionListener dialogActions, String currentText) {
-        dialogActions.okAction();
-        return currentText;
+        if (decimalFormatSymbols == null) {
+            return currentText;
+        }
+        return currentText + decimalFormatSymbols.getDecimalSeparator();
     }
 }

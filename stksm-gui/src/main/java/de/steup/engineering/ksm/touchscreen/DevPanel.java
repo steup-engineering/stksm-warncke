@@ -15,6 +15,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -32,6 +33,8 @@ import javax.swing.SwingConstants;
 public class DevPanel extends JPanel implements UpdatePanelInterface {
 
     private static final long serialVersionUID = -1887846471221849425L;
+
+    private final static DecimalFormat DIST_FORMAT = new DecimalFormat("#0.0");
 
     private static final int TEXT_FIELD_COLUMNS = 10;
     private final List<UpdatePanelInterface> updatePanels = new ArrayList<>();
@@ -88,7 +91,7 @@ public class DevPanel extends JPanel implements UpdatePanelInterface {
                     }
                 }
             };
-            distText = addParamItem(owner, paramPanel, labelConst, textConst, distLabel, 0.0, 30.0, 0.0, distSetter);
+            distText = addParamItem(owner, paramPanel, labelConst, textConst, distLabel, 0.0, 30.0, 0.0, DIST_FORMAT, distSetter);
         }
 
         FloatSetter margStartSetter = new FloatSetter() {
@@ -102,7 +105,7 @@ public class DevPanel extends JPanel implements UpdatePanelInterface {
                 }
             }
         };
-        margStartText = addParamItem(owner, paramPanel, labelConst, textConst, "Rand links [mm]", 0.0, 4000.0, 0.0, margStartSetter);
+        margStartText = addParamItem(owner, paramPanel, labelConst, textConst, "Rand links [mm]", 0.0, 4000.0, 0.0, DIST_FORMAT, margStartSetter);
 
         FloatSetter margEndSetter = new FloatSetter() {
 
@@ -115,7 +118,7 @@ public class DevPanel extends JPanel implements UpdatePanelInterface {
                 }
             }
         };
-        margEndText = addParamItem(owner, paramPanel, labelConst, textConst, "Rand rechts [mm]", 0.0, 4000.0, 0.0, margEndSetter);
+        margEndText = addParamItem(owner, paramPanel, labelConst, textConst, "Rand rechts [mm]", 0.0, 4000.0, 0.0, DIST_FORMAT, margEndSetter);
 
         paramPanel.setBorder(BorderFactory.createEtchedBorder());
 
@@ -130,7 +133,7 @@ public class DevPanel extends JPanel implements UpdatePanelInterface {
         }
     }
 
-    private JTextField addParamItem(Window owner, JPanel panel, GridBagConstraints labelConst, GridBagConstraints textConst, String labelText, double min, double max, double deflt, FloatSetter setter) {
+    private JTextField addParamItem(Window owner, JPanel panel, GridBagConstraints labelConst, GridBagConstraints textConst, String labelText, double min, double max, double deflt, DecimalFormat format, FloatSetter setter) {
         JLabel label = new JLabel(labelText + ": ");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
         panel.add(label, labelConst);
@@ -139,8 +142,8 @@ public class DevPanel extends JPanel implements UpdatePanelInterface {
         final JTextField textField = new JTextField(TEXT_FIELD_COLUMNS);
         textField.setEditable(false);
         textField.setBackground(Color.WHITE);
-        textField.setText(Double.toString(deflt));
-        textField.addMouseListener(new FloatMouseListener(owner, labelText, textField, min, max, setter));
+        textField.setText(format.format(deflt));
+        textField.addMouseListener(new FloatMouseListener(owner, labelText, textField, min, max, format, setter));
         panel.add(textField, textConst);
         textConst.gridy++;
 
@@ -156,13 +159,13 @@ public class DevPanel extends JPanel implements UpdatePanelInterface {
         GuiInMain guiInData = MachineThread.getInstance().getGuiInData();
         synchronized (guiInData) {
             if (distText != null) {
-                distText.setText(Double.toString(devData.getDist()));
+                distText.setText(DIST_FORMAT.format(devData.getDist()));
             }
             if (margStartText != null) {
-                margStartText.setText(Double.toString(devData.getMarginStart()));
+                margStartText.setText(DIST_FORMAT.format(devData.getMarginStart()));
             }
             if (margEndText != null) {
-                margEndText.setText(Double.toString(devData.getMarginEnd()));
+                margEndText.setText(DIST_FORMAT.format(devData.getMarginEnd()));
             }
         }
     }

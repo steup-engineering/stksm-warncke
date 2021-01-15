@@ -7,6 +7,7 @@ package de.steup.engineering.ksm.touchscreen.dialogs;
 import java.awt.Window;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
 import javax.swing.JTextField;
 
 /**
@@ -18,16 +19,18 @@ public class FloatMouseListener implements MouseListener {
     private final Window owner;
     private final String title;
     private final JTextField field;
-    private double min = Double.NEGATIVE_INFINITY;
-    private double max = Double.POSITIVE_INFINITY;
+    private final double min;
+    private final double max;
+    private final DecimalFormat format;
     private final FloatSetter setter;
 
-    public FloatMouseListener(Window owner, String title, JTextField field, double min, double max, FloatSetter setter) {
+    public FloatMouseListener(Window owner, String title, JTextField field, double min, double max, DecimalFormat format, FloatSetter setter) {
         this.owner = owner;
         this.title = title;
         this.field = field;
         this.min = min;
         this.max = max;
+        this.format = format;
         this.setter = setter;
     }
 
@@ -49,7 +52,7 @@ public class FloatMouseListener implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        FloatDialog.showDialog(owner, title, field, min, max, setter);
+        FloatDialog.showDialog(owner, title, field, min, max, format, setter);
     }
 
     @Override

@@ -18,8 +18,8 @@ public class IntegerMouseListener implements MouseListener {
     private final Window owner;
     private final String title;
     private final JTextField field;
-    private int min = Integer.MIN_VALUE;
-    private int max = Integer.MAX_VALUE;
+    private final int min;
+    private final int max;
 
     public IntegerMouseListener(Window owner, String title, JTextField field, int min, int max) {
         this.owner = owner;

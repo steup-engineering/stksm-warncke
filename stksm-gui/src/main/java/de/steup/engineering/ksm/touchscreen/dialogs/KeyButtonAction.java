@@ -4,6 +4,8 @@
  */
 package de.steup.engineering.ksm.touchscreen.dialogs;
 
+import java.text.DecimalFormatSymbols;
+
 /**
  *
  * @author sascha
@@ -20,5 +22,5 @@ public abstract class KeyButtonAction {
         return caption;
     }
 
-    public abstract String execute(DialogActionListener dialogActions, String currentText);
+    public abstract String execute(DecimalFormatSymbols decimalFormatSymbols, DialogActionListener dialogActions, String currentText);
 }

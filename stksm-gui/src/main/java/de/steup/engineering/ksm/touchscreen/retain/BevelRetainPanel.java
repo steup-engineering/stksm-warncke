@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Window;
+import java.text.DecimalFormat;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -29,6 +30,8 @@ import javax.swing.SwingConstants;
 public class BevelRetainPanel extends JPanel {
 
     private static final long serialVersionUID = -1702642935703092092L;
+
+    private final static DecimalFormat DIST_FORMAT = new DecimalFormat("#0.0");
 
     private static final int TEXT_FIELD_COLUMNS = 10;
 
@@ -64,7 +67,7 @@ public class BevelRetainPanel extends JPanel {
                 }
             }
         };
-        addParamItem(owner, globalPanel, labelConst, textConst, "Breiten-Offset [mm]", -10.0, 10.0, retainData.getWidthOffset(), widthOffsetSetter);
+        addParamItem(owner, globalPanel, labelConst, textConst, "Breiten-Offset [mm]", -10.0, 10.0, retainData.getWidthOffset(), DIST_FORMAT, widthOffsetSetter);
 
         add(globalPanel);
 
@@ -81,7 +84,7 @@ public class BevelRetainPanel extends JPanel {
         setBorder(BorderFactory.createTitledBorder(title));
     }
 
-    private JTextField addParamItem(Window owner, JPanel panel, GridBagConstraints labelConst, GridBagConstraints textConst, String labelText, double min, double max, double deflt, FloatSetter setter) {
+    private JTextField addParamItem(Window owner, JPanel panel, GridBagConstraints labelConst, GridBagConstraints textConst, String labelText, double min, double max, double deflt, DecimalFormat format, FloatSetter setter) {
         JLabel label = new JLabel(labelText + ": ");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
         panel.add(label, labelConst);
@@ -90,8 +93,8 @@ public class BevelRetainPanel extends JPanel {
         final JTextField textField = new JTextField(TEXT_FIELD_COLUMNS);
         textField.setEditable(false);
         textField.setBackground(Color.WHITE);
-        textField.setText(Double.toString(deflt));
-        textField.addMouseListener(new FloatMouseListener(owner, labelText, textField, min, max, setter));
+        textField.setText(format.format(deflt));
+        textField.addMouseListener(new FloatMouseListener(owner, labelText, textField, min, max, format, setter));
         panel.add(textField, textConst);
         textConst.gridy++;
 
