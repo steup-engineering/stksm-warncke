@@ -22,6 +22,7 @@ public class GuiOutMain {
     public static final int ERR_BEVEL_LOWER = (1 << 7);
     public static final int ERR_BEVEL_UPPER = (1 << 8);
     public static final int ERR_BUS_SYSTEM = (1 << 9);
+    public static final int ERR_MODSEL_CLEAN1 = (1 << 10);
 
     private int errors;
     private boolean running;

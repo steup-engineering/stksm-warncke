@@ -30,18 +30,41 @@ public class ErrorDialog extends JDialog {
 
     private static final long serialVersionUID = 3313303411371387035L;
 
-    private static final String[] ERRORS = {
-        "Notaus",
-        "Türe offen",
-        "Luftdruck fehlt",
-        "Wasserdruck fehlt",
-        "Motorschutz ausgelöst",
-        "Fehler Bandantrieb",
-        "Fehler Universalagregat",
-        "Fehler Fasenfräser unten",
-        "Fehler Fasenfräser oben",
-        "Fehler Bussystem",
-        "Fehler Modusumschaltung Cleaner 1"
+    private static class ErrorItem {
+
+        private final int mask;
+        private final String caption;
+
+        public ErrorItem(int mask, String caption) {
+            this.mask = mask;
+            this.caption = caption;
+        }
+
+        public int getMask() {
+            return mask;
+        }
+
+        public String getCaption() {
+            return caption;
+        }
+
+        public boolean isActive(int error) {
+            return (error & mask) != 0;
+        }
+    };
+
+    private static final ErrorItem[] ERRORS = {
+        new ErrorItem(GuiOutMain.ERR_EMERG_STOP, "Notaus"),
+        new ErrorItem(GuiOutMain.ERR_DOOR_INTERLOCK, "Türe offen"),
+        new ErrorItem(GuiOutMain.ERR_AIR_PRESS, "Luftdruck fehlt"),
+        new ErrorItem(GuiOutMain.ERR_WATER_PRESS, "Wasserdruck fehlt"),
+        new ErrorItem(GuiOutMain.ERR_MOTOR_PROT, "Motorschutz ausgelöst"),
+        new ErrorItem(GuiOutMain.ERR_BELT, "Fehler Bandantrieb"),
+        new ErrorItem(GuiOutMain.ERR_UNIDEV, "Fehler Universalagregat"),
+        new ErrorItem(GuiOutMain.ERR_BEVEL_LOWER, "Fehler Fasenfräser unten"),
+        new ErrorItem(GuiOutMain.ERR_BEVEL_UPPER, "Fehler Fasenfräser oben"),
+        new ErrorItem(GuiOutMain.ERR_BUS_SYSTEM, "Fehler Bussystem"),
+        new ErrorItem(GuiOutMain.ERR_MODSEL_CLEAN1, "Fehler Modusumschaltung Cleaner 1")
     };
 
     private final JCheckBox errorBoxes[];
@@ -59,8 +82,9 @@ public class ErrorDialog extends JDialog {
                         err = guiOutData.getErrors();
                     }
                     for (int i = 0; i < errorBoxes.length; i++) {
+                        ErrorItem ei = ERRORS[i];
                         JCheckBox errorBox = errorBoxes[i];
-                        errorBox.setSelected((err & (1 << i)) != 0);
+                        errorBox.setSelected(ei.isActive(err));
                     }
                 }
             });
@@ -93,7 +117,8 @@ public class ErrorDialog extends JDialog {
 
         errorBoxes = new JCheckBox[ERRORS.length];
         for (int i = 0; i < ERRORS.length; i++) {
-            JCheckBox cb = new JCheckBox(ERRORS[i]);
+            ErrorItem ei = ERRORS[i];
+            JCheckBox cb = new JCheckBox(ei.getCaption());
             cb.setEnabled(false);
             spc.add(cb);
             errorBoxes[i] = cb;
