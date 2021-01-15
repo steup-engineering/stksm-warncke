@@ -140,6 +140,7 @@ public class ProcessPanel extends JPanel implements UpdatePanelInterface {
         dp = new DevPanel(owner, "Fase oben", bevelUpperMotors, bevelUpperCalibAction, "Fasenbreite [mm]", true, guiInData.getBevels()[1]);
         updatePanels.add(dp);
         bevelPanel.add(dp);
+
         List<MotorData> bevelLowerMotors = new ArrayList<>();
         bevelLowerMotors.add(new MotorData("Fräser", guiInData.getBevels()[0].getMotors()[0], guiOutData.getBevels()[0].getMotors()[0]));
         bevelLowerMotors.add(new MotorData("Poli 1", guiInData.getBevels()[0].getMotors()[1], guiOutData.getBevels()[0].getMotors()[1]));

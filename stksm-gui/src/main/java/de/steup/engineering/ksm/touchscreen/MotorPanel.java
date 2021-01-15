@@ -71,6 +71,8 @@ public class MotorPanel extends MotorBasePanel implements UpdatePanelInterface {
 
         if (hasEnable) {
             for (int i = 0; i < motors.size(); i++) {
+                final MotorData motor = motors.get(i);
+
                 final JButton nb = new JButton("aktiv");
                 if (buttonDefaultColor == null) {
                     buttonDefaultColor = nb.getBackground();
@@ -78,7 +80,7 @@ public class MotorPanel extends MotorBasePanel implements UpdatePanelInterface {
                 enaButton.add(nb);
                 add(nb);
 
-                final GuiInStationInterface stationIn = motors.get(i).getInData();
+                final GuiInStationInterface stationIn = motor.getInData();
                 nb.addActionListener(new ActionListener() {
 
                     @Override
@@ -97,12 +99,14 @@ public class MotorPanel extends MotorBasePanel implements UpdatePanelInterface {
         }
 
         for (int i = 0; i < motors.size(); i++) {
+            final MotorData motor = motors.get(i);
+
             final JButton nb = new JButton("manu");
             final Color defaultColor = nb.getBackground();
             add(nb);
 
-            final GuiInStationInterface stationIn = motors.get(i).getInData();
-            final GuiOutStationInterface stationOut = motors.get(i).getOutData();
+            final GuiInStationInterface stationIn = motor.getInData();
+            final GuiOutStationInterface stationOut = motor.getOutData();
             nb.addMouseListener(new MachButtonListener() {
                 @Override
                 protected void stateChanged(GuiInMain guiInData, boolean pressed) {
