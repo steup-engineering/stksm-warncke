@@ -4,8 +4,6 @@
  */
 package de.steup.engineering.ksm.touchscreen.retain;
 
-import de.steup.engineering.ksm.plc.rest.MachineThread;
-import de.steup.engineering.ksm.plc.entities.GuiInMain;
 import de.steup.engineering.ksm.plc.retain.PosOffsetInterface;
 import de.steup.engineering.ksm.touchscreen.dialogs.FloatMouseListener;
 import de.steup.engineering.ksm.touchscreen.dialogs.FloatSetter;
@@ -52,11 +50,7 @@ public class PosOffsetRetainPanel extends JPanel {
 
             @Override
             public void setValue(double value) {
-
-                GuiInMain guiInData = MachineThread.getInstance().getGuiInData();
-                synchronized (guiInData) {
-                    retainData.setPos(value);
-                }
+                retainData.setPos(value);
             }
         };
         addParamItem(owner, labelConst, textConst, "Mitte [mm]", 0.0, 6000.0, retainData.getPos(), DIST_FORMAT, posSetter);
@@ -65,11 +59,7 @@ public class PosOffsetRetainPanel extends JPanel {
 
             @Override
             public void setValue(double value) {
-
-                GuiInMain guiInData = MachineThread.getInstance().getGuiInData();
-                synchronized (guiInData) {
-                    retainData.setOnOffset(value);
-                }
+                retainData.setOnOffset(value);
             }
         };
         addParamItem(owner, labelConst, textConst, "Offset ein [mm]", -999.0, 999.0, retainData.getOnOffset(), DIST_FORMAT, onOffsetSetter);
@@ -78,11 +68,7 @@ public class PosOffsetRetainPanel extends JPanel {
 
             @Override
             public void setValue(double value) {
-
-                GuiInMain guiInData = MachineThread.getInstance().getGuiInData();
-                synchronized (guiInData) {
-                    retainData.setOffOffset(value);
-                }
+                retainData.setOffOffset(value);
             }
         };
         addParamItem(owner, labelConst, textConst, "Offset aus [mm]", -999.0, 999.0, retainData.getOffOffset(), DIST_FORMAT, offOffsetSetter);

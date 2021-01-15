@@ -4,8 +4,6 @@
  */
 package de.steup.engineering.ksm.touchscreen.retain;
 
-import de.steup.engineering.ksm.plc.rest.MachineThread;
-import de.steup.engineering.ksm.plc.entities.GuiInMain;
 import de.steup.engineering.ksm.plc.retain.RetainUnidev;
 import de.steup.engineering.ksm.touchscreen.dialogs.FloatMouseListener;
 import de.steup.engineering.ksm.touchscreen.dialogs.FloatSetter;
@@ -52,11 +50,7 @@ public class UnidevRetainPanel extends JPanel {
 
             @Override
             public void setValue(double value) {
-
-                GuiInMain guiInData = MachineThread.getInstance().getGuiInData();
-                synchronized (guiInData) {
-                    retainData.setPos(value);
-                }
+                retainData.setPos(value);
             }
         };
         addParamItem(owner, labelConst, textConst, "Pos [mm]", 0.0, 6000.0, retainData.getPos(), DIST_FORMAT, posSetter);
