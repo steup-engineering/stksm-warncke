@@ -11,13 +11,12 @@ import de.steup.engineering.ksm.plc.entities.GuiInStationInterface;
 import de.steup.engineering.ksm.plc.entities.GuiOutStationInterface;
 import de.steup.engineering.ksm.touchscreen.dialogs.StringMouseListener;
 import de.steup.engineering.ksm.touchscreen.dialogs.StringSetter;
+import de.steup.engineering.ksm.touchscreen.util.MachButtonListener;
 import de.steup.engineering.ksm.touchscreen.util.MotorData;
 import java.awt.Color;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -104,35 +103,10 @@ public class MotorPanel extends MotorBasePanel implements UpdatePanelInterface {
 
             final GuiInStationInterface stationIn = motors.get(i).getInData();
             final GuiOutStationInterface stationOut = motors.get(i).getOutData();
-            nb.addMouseListener(new MouseListener() {
-
+            nb.addMouseListener(new MachButtonListener() {
                 @Override
-                public void mouseClicked(MouseEvent e) {
-                    // NOP
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    synchronized (MachineThread.getInstance().getGuiInData()) {
-                        stationIn.setManu(true);
-                    }
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    synchronized (MachineThread.getInstance().getGuiInData()) {
-                        stationIn.setManu(false);
-                    }
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    // NOP
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    // NOP
+                protected void stateChanged(GuiInMain guiInData, boolean pressed) {
+                    stationIn.setManu(pressed);
                 }
             });
 

@@ -22,8 +22,7 @@ import de.steup.engineering.ksm.plc.entities.GuiInMain;
 import de.steup.engineering.ksm.process.LoadDialog;
 import de.steup.engineering.ksm.process.PersUtil;
 import de.steup.engineering.ksm.process.SaveDialog;
-import java.awt.event.MouseEvent;
-import javax.swing.event.MouseInputListener;
+import de.steup.engineering.ksm.touchscreen.util.MachButtonListener;
 import java.awt.Window;
 
 /**
@@ -84,46 +83,10 @@ public class FooterPanel extends JPanel {
             }
         });
 
-        jobResetButton.addMouseListener(new MouseInputListener() {
+        jobResetButton.addMouseListener(new MachButtonListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                // NOP
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                final GuiInMain gi = MachineThread.getInstance().getGuiInData();
-                synchronized (gi) {
-                    gi.setWhmJobReset(true);
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                final GuiInMain gi = MachineThread.getInstance().getGuiInData();
-                synchronized (gi) {
-                    gi.setWhmJobReset(false);
-                }
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // NOP
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // NOP
-            }
-
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                // NOP
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                // NOP
+            protected void stateChanged(GuiInMain guiInData, boolean pressed) {
+                guiInData.setWhmJobReset(pressed);
             }
         });
 

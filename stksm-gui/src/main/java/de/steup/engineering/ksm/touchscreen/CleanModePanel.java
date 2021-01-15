@@ -8,11 +8,10 @@ import de.steup.engineering.ksm.touchscreen.util.CaptionChangeListener;
 import de.steup.engineering.ksm.plc.entities.GuiCleanerMode;
 import de.steup.engineering.ksm.plc.rest.MachineThread;
 import de.steup.engineering.ksm.plc.entities.GuiInMain;
+import de.steup.engineering.ksm.touchscreen.util.MachButtonListener;
 import de.steup.engineering.ksm.touchscreen.util.MotorData;
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -84,35 +83,10 @@ public class CleanModePanel extends JPanel implements UpdatePanelInterface, Capt
         final JButton nb = new JButton(caption);
         final Color defaultColor = nb.getBackground();
 
-        nb.addMouseListener(new MouseListener() {
-
+        nb.addMouseListener(new MachButtonListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                // NOP
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                synchronized (MachineThread.getInstance().getGuiInData()) {
-                    iface.setState(true);
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                synchronized (MachineThread.getInstance().getGuiInData()) {
-                    iface.setState(false);
-                }
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // NOP
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // NOP
+            protected void stateChanged(GuiInMain guiInData, boolean pressed) {
+                iface.setState(pressed);
             }
         });
 
