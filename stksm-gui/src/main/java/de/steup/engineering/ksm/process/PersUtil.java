@@ -6,7 +6,7 @@ package de.steup.engineering.ksm.process;
 
 import de.steup.engineering.ksm.plc.entities.GuiInBevel;
 import de.steup.engineering.ksm.plc.entities.GuiInMain;
-import de.steup.engineering.ksm.plc.entities.GuiInStation;
+import de.steup.engineering.ksm.plc.entities.GuiInStationInterface;
 import de.steup.engineering.ksm.plc.entities.GuiInUnidev;
 import java.awt.Window;
 import java.io.File;
@@ -57,10 +57,10 @@ public class PersUtil {
         }
     }
 
-    private ArrayList<PersMotorEnt> motorsPlcToPers(GuiInStation plcMotors[]) {
+    private ArrayList<PersMotorEnt> motorsPlcToPers(GuiInStationInterface plcMotors[]) {
         ArrayList<PersMotorEnt> motors = new ArrayList<>();
         for (int i = 0; i < plcMotors.length; i++) {
-            GuiInStation plcMotor = plcMotors[i];
+            GuiInStationInterface plcMotor = plcMotors[i];
             PersMotorEnt motor = new PersMotorEnt();
             motor.setIndex(i);
             motor.setEna(plcMotor.isEna());
@@ -70,14 +70,14 @@ public class PersUtil {
         return motors;
     }
 
-    private void motorsPersToPlc(ArrayList<PersMotorEnt> motors, GuiInStation plcMotors[]) {
+    private void motorsPersToPlc(ArrayList<PersMotorEnt> motors, GuiInStationInterface plcMotors[]) {
         if (motors == null) {
             return;
         }
         for (PersMotorEnt motor : motors) {
             int i = motor.getIndex();
             if (i >= 0 && i < plcMotors.length) {
-                GuiInStation plcMotor = plcMotors[i];
+                GuiInStationInterface plcMotor = plcMotors[i];
                 plcMotor.setEna(motor.isEna());
                 plcMotor.setCaption(motor.getCaption());
             }
