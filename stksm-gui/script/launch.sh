@@ -18,6 +18,6 @@ java \
   -Dswing.aatext=true \
   -Dswing.plaf.metal.controlFont=SansSerif-18 \
   -Dswing.plaf.metal.userFont=SansSerif-18 \
-  -jar stksm-friedl-gui.jar \
+  -jar stksm-warncke-gui.jar \
   "$REST_URL" "$PROC_DIR" "$PARAM_DIR"
 

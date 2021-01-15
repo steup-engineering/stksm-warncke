@@ -14,10 +14,10 @@ set -e
 mvn clean install
 
 mkdir -p "$LINUXCNC_HOME/java"
-cp target/stksm-gui-*.jar "$LINUXCNC_HOME/java/stksm-friedl-gui.jar"
+cp target/stksm-gui-*.jar "$LINUXCNC_HOME/java/stksm-warncke-gui.jar"
 cp -r target/lib "$LINUXCNC_HOME/java"
 
 mkdir -p "$LINUXCNC_HOME/bin"
-cp script/launch.sh "$LINUXCNC_HOME/bin/stksm-friedl-gui"
-chmod ugo+x "$LINUXCNC_HOME/bin/stksm-friedl-gui"
+cp script/launch.sh "$LINUXCNC_HOME/bin/stksm-warncke-gui"
+chmod ugo+x "$LINUXCNC_HOME/bin/stksm-warncke-gui"
 
