@@ -12,16 +12,16 @@ import de.steup.engineering.ksm.Main;
  */
 public class GuiOutMain {
 
-    public static final int ERR_EMERG_STOP = 0x00000001;
-    public static final int ERR_DOOR_INTERLOCK = 0x00000002;
-    public static final int ERR_AIR_PRESS = 0x00000004;
-    public static final int ERR_WATER_PRESS = 0x00000008;
-    public static final int ERR_MOTOR_PROT = 0x00000010;
-    public static final int ERR_BELT = 0x00000020;
-    public static final int ERR_UNIDEV = 0x00000040;
-    public static final int ERR_BEVEL_LOWER = 0x00000080;
-    public static final int ERR_BEVEL_UPPER = 0x00000100;
-    public static final int ERR_BUS = 0x00000200;
+    public static final int ERR_EMERG_STOP = (1 << 0);
+    public static final int ERR_DOOR_INTERLOCK = (1 << 1);
+    public static final int ERR_AIR_PRESS = (1 << 2);
+    public static final int ERR_WATER_PRESS = (1 << 3);
+    public static final int ERR_MOTOR_PROT = (1 << 4);
+    public static final int ERR_BELT = (1 << 5);
+    public static final int ERR_UNIDEV = (1 << 6);
+    public static final int ERR_BEVEL_LOWER = (1 << 7);
+    public static final int ERR_BEVEL_UPPER = (1 << 8);
+    public static final int ERR_BUS_SYSTEM = (1 << 9);
 
     private int errors;
     private boolean running;
