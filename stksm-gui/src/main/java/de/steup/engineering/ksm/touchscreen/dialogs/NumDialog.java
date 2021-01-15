@@ -4,6 +4,12 @@
  */
 package de.steup.engineering.ksm.touchscreen.dialogs;
 
+import de.steup.engineering.ksm.touchscreen.dialogs.buttons.SignButton;
+import de.steup.engineering.ksm.touchscreen.dialogs.buttons.OkButton;
+import de.steup.engineering.ksm.touchscreen.dialogs.buttons.CancelButton;
+import de.steup.engineering.ksm.touchscreen.dialogs.buttons.DelButton;
+import de.steup.engineering.ksm.touchscreen.dialogs.buttons.CharButton;
+import de.steup.engineering.ksm.touchscreen.dialogs.buttons.ClearButton;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;

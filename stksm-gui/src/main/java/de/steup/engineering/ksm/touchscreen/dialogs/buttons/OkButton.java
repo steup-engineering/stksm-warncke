@@ -2,7 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.steup.engineering.ksm.touchscreen.dialogs;
+package de.steup.engineering.ksm.touchscreen.dialogs.buttons;
+
+import de.steup.engineering.ksm.touchscreen.dialogs.DialogActionListener;
+import de.steup.engineering.ksm.touchscreen.dialogs.KeyButtonAction;
 
 /**
  *
