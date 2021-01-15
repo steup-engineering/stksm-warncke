@@ -23,24 +23,6 @@ public class RetainUnidev implements Serializable {
     @XmlAttribute(name = "pos")
     private double pos;
 
-    public static void update(RetainUnidev[] dst, RetainUnidev[] src) {
-        if (src == null) {
-            return;
-        }
-
-        for (int i = 0; i < Math.min(src.length, dst.length); i++) {
-            dst[i].update(src[i]);
-        }
-    }
-
-    public void update(RetainUnidev src) {
-        if (src == null) {
-            return;
-        }
-
-        pos = src.pos;
-    }
-
     public double getPos() {
         return pos;
     }

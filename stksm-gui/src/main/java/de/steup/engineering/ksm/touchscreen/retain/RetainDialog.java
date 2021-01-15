@@ -45,12 +45,12 @@ public class RetainDialog extends JDialog {
             return;
         }
 
-        RetainMain retainData = new RetainMain();
-
+        RetainMain retainData;
         try {
-            mach.readRetainData(retainData);
+            retainData = mach.readRetainData();
         } catch (PlcRestException ex) {
             JOptionPane.showMessageDialog(Main.getMainFrame(), String.format("REST-Fehler %d.", ex.getStatus()), "Verbindungsfehler", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         RetainDialog dlg = new RetainDialog(retainData);
@@ -65,7 +65,6 @@ public class RetainDialog extends JDialog {
         super(Main.getMainFrame(), "Retain Values", true);
 
         super.setResizable(false);
-
         super.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         Container pane = super.getContentPane();

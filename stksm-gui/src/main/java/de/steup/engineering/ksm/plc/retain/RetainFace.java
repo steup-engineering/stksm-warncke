@@ -27,26 +27,6 @@ public class RetainFace implements PosOffsetInterface, Serializable {
     @XmlAttribute(name = "offOffset")
     private double offOffset;
 
-    public static void update(RetainFace[] dst, RetainFace[] src) {
-        if (src == null) {
-            return;
-        }
-
-        for (int i = 0; i < Math.min(src.length, dst.length); i++) {
-            dst[i].update(src[i]);
-        }
-    }
-
-    public void update(RetainFace src) {
-        if (src == null) {
-            return;
-        }
-
-        pos = src.pos;
-        onOffset = src.onOffset;
-        offOffset = src.offOffset;
-    }
-
     @Override
     public double getOffOffset() {
         return offOffset;

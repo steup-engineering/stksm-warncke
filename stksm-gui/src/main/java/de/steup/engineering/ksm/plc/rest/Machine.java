@@ -76,8 +76,8 @@ public class Machine {
         writeGenericData(restUrlRetainMain, data);
     }
 
-    public void readRetainData(RetainMain data) throws PlcRestException {
-        data.update((RetainMain) readGenericData(restUrlRetainMain, RetainMain.class));
+    public RetainMain readRetainData() throws PlcRestException {
+        return (RetainMain) readGenericData(restUrlRetainMain, RetainMain.class);
     }
 
     private Object readGenericData(URL url, Class clazz) throws PlcRestException {

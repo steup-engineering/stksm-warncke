@@ -36,27 +36,6 @@ public class RetainBevel implements Serializable {
         }
     }
 
-    public static void update(RetainBevel[] dst, RetainBevel[] src) {
-        if (src == null) {
-            return;
-        }
-
-        for (int i = 0; i < Math.min(src.length, dst.length); i++) {
-            dst[i].update(src[i]);
-        }
-    }
-
-    public void update(RetainBevel src) {
-        if (src == null) {
-            return;
-        }
-
-        widthOffset = src.widthOffset;
-        posctl.update(src.posctl);
-
-        RetainFace.update(motors, src.motors);
-    }
-
     public double getWidthOffset() {
         return widthOffset;
     }
