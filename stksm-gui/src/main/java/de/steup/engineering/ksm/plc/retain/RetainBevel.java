@@ -22,11 +22,11 @@ public class RetainBevel implements Serializable {
 
     private static final long serialVersionUID = -1511750761293701439L;
 
-    @XmlAttribute(name ="widthOffset")
+    @XmlAttribute(name = "widthOffset")
     private double widthOffset;
-    @XmlElement(name ="posctl")
+    @XmlElement(name = "posctl")
     private final RetainFace posctl;
-    @XmlElement(name ="motors")
+    @XmlElement(name = "motors")
     private final RetainFace motors[] = new RetainFace[Main.BEVEL_MOTOR_COUNT];
 
     public RetainBevel() {
@@ -40,7 +40,7 @@ public class RetainBevel implements Serializable {
         if (src == null) {
             return;
         }
-        
+
         for (int i = 0; i < Math.min(src.length, dst.length); i++) {
             dst[i].update(src[i]);
         }

@@ -39,7 +39,7 @@ public class MotorPanel extends MotorBasePanel implements UpdatePanelInterface {
 
     public MotorPanel(String title, List<MotorData> motors, boolean hasLabel, boolean hasEnable) {
         super(title, motors.size());
-        
+
         motors = new ArrayList<>(motors);
         if (Main.RIGHT_TO_LEFT) {
             Collections.reverse(motors);

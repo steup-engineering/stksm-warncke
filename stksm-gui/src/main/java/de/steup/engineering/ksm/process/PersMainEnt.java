@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.steup.engineering.ksm.process;
 
 import java.io.Serializable;
@@ -35,7 +34,7 @@ public class PersMainEnt implements Serializable {
     private ArrayList<PersBevelEnt> bevels;
     @XmlAttribute(name = "paramSetName")
     private String paramSetName;
-    
+
     public double getBeltFeed() {
         return beltFeed;
     }

@@ -90,10 +90,10 @@ public class RetainDialog extends JDialog {
         buttonPanel.setLayout(buttonLayout);
 
         JButton loadButton = new JButton("Laden ...");
-        
+
         // used to referenced to this in ebmedded classes
         final RetainDialog context = this;
-        
+
         loadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -170,7 +170,7 @@ public class RetainDialog extends JDialog {
     public final void setRetainData(RetainMain retainData) {
         this.retainData = retainData;
         this.spc.removeAll();
-        
+
         RetainFace faces[] = this.retainData.getFaces();
         for (int i = 0; i < Main.FACE_COUNT; i++) {
             spc.add(new PosOffsetRetainPanel(String.format("Flächenmotor %d", i + 1), faces[i]));

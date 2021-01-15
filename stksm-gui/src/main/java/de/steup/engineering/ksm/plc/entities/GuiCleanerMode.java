@@ -18,7 +18,7 @@ public class GuiCleanerMode {
             return;
         }
 
-        for (int i=0; i<Math.min(src.length, dst.length); i++) {
+        for (int i = 0; i < Math.min(src.length, dst.length); i++) {
             dst[i].update(src[i]);
         }
     }

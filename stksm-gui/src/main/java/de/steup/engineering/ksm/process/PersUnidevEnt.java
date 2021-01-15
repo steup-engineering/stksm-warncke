@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "unidev")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PersUnidevEnt implements Serializable  {
+public class PersUnidevEnt implements Serializable {
 
     private static final long serialVersionUID = 430278511393134729L;
 

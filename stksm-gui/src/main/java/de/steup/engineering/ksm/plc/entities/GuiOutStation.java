@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.steup.engineering.ksm.plc.entities;
 
 /**
@@ -18,19 +17,19 @@ public class GuiOutStation implements GuiOutStationInterface {
             return;
         }
 
-        for (int i=0; i<Math.min(src.length, dst.length); i++) {
+        for (int i = 0; i < Math.min(src.length, dst.length); i++) {
             dst[i].update(src[i]);
         }
     }
-    
+
     public void update(GuiOutStation src) {
         if (src == null) {
             return;
         }
-        
+
         active = src.active;
     }
-    
+
     @Override
     public boolean isActive() {
         return active;

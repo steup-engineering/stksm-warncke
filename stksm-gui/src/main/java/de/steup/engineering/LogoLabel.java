@@ -5,7 +5,6 @@
 package de.steup.engineering;
 
 import java.net.URL;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.steup.engineering.ksm.process;
 
 import java.io.Serializable;
@@ -23,15 +22,15 @@ public class PersBevelEnt implements Serializable {
 
     private static final long serialVersionUID = -1162286332457682497L;
 
-    @XmlAttribute(name ="index")
+    @XmlAttribute(name = "index")
     private int index;
-    @XmlAttribute(name ="width")
+    @XmlAttribute(name = "width")
     private double width;
-    @XmlAttribute(name ="marginStart")
+    @XmlAttribute(name = "marginStart")
     private double marginStart;
-    @XmlAttribute(name ="marginEnd")
+    @XmlAttribute(name = "marginEnd")
     private double marginEnd;
-    @XmlElement(name ="motor")
+    @XmlElement(name = "motor")
     private ArrayList<PersMotorEnt> motors;
 
     public int getIndex() {

@@ -32,13 +32,13 @@ public class Main {
     public static final int UNIDEV_COUNT = 1;
     public static final int BEVEL_COUNT = 2;
     public static final int BEVEL_MOTOR_COUNT = 3;
-    
+
     public static final boolean RIGHT_TO_LEFT = true;
 
     private static JFrame mainFrame;
     private static PathConfig processPath;
     private static PathConfig paramPath;
-    
+
     public static JFrame getMainFrame() {
         return mainFrame;
     }

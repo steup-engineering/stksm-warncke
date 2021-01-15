@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.steup.engineering.ksm.plc.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,7 +21,7 @@ public class GuiInBevel implements GuiInDevInterface, GuiCalibInterface {
     private double marginEnd;
 
     public GuiInBevel() {
-        for (int i=0; i<Main.BEVEL_MOTOR_COUNT; i++) {
+        for (int i = 0; i < Main.BEVEL_MOTOR_COUNT; i++) {
             motors[i] = new GuiInStation();
         }
     }

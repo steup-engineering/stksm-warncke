@@ -49,7 +49,7 @@ public abstract class AbstractSaveDialog extends JDialog {
     public AbstractSaveDialog(PathConfig pathConfig) {
         super(Main.getMainFrame(), pathConfig.getDesc() + " laden", true);
         this.pathConfig = pathConfig;
-        
+
         super.setResizable(false);
 
         super.setDefaultCloseOperation(DISPOSE_ON_CLOSE);

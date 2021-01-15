@@ -23,20 +23,20 @@ public class GuiOutWhmStation implements GuiOutStationInterface {
             return;
         }
 
-        for (int i=0; i<Math.min(src.length, dst.length); i++) {
+        for (int i = 0; i < Math.min(src.length, dst.length); i++) {
             dst[i].update(src[i]);
         }
     }
-    
+
     public void update(GuiOutWhmStation src) {
         if (src == null) {
             return;
         }
-        
+
         active = src.active;
         whm.update(src.whm);
     }
-    
+
     @Override
     public boolean isActive() {
         return active;

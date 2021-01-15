@@ -28,7 +28,7 @@ public class FileMouseListener implements MouseListener, ActionListener {
 
         @Override
         protected void loadFile(File file) {
-            
+
             String rootPath = pathConfig.getRoot().getAbsolutePath();
             String val = file.getAbsolutePath().substring(rootPath.length() + 1);
             int i = val.lastIndexOf('.');

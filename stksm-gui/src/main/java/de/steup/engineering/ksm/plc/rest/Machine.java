@@ -105,8 +105,8 @@ public class Machine {
                 disconnect();
                 throw new PlcRestException("Unable to read from "
                         + clazz.getSimpleName() + " endpoint", ex);
-            } 
-               
+            }
+
             if (status != 200) {
                 throw new PlcRestException("Server error", status);
             }
@@ -143,7 +143,7 @@ public class Machine {
             OutputStream os;
             try {
                 // TODO timeout ?
-                conn.setRequestProperty("Content-Type","application/json;charset=UTF-8");
+                conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
                 os = conn.getOutputStream();

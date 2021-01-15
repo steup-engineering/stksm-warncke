@@ -75,7 +75,7 @@ public class GuiOutMain {
         GuiCleanerMode.update(cleanersMode, src.cleanersMode);
         GuiOutUnidev.update(unidevs, src.unidevs);
         GuiOutBevel.update(bevels, src.bevels);
-        
+
         whm.update(src.whm);
         whmJob.update(src.whmJob);
     }
