@@ -140,8 +140,8 @@ net rolls-1-active <= ksm-belt.fi-0.st-1.out
 # material probe is done on station 1
 # offset between fifo0 and fifo1 switch is very small (< 100mm)
 # so we don't need an additional offset for the probe position
-net roll-1-pers-pos => ksm-belt.fi-0.probe-position
-net roll-1-pers-pos => ksm-belt.fi-1.probe-position
+net roll-1-pers-pos => ksm-belt.fi-0.pr-0.position
+net roll-1-pers-pos => ksm-belt.fi-1.pr-0.position
 net matprobe-reset <= ksm-belt.fi-0.st-1.out-inv
 
 setp ksm-belt.fi-0.st-2.enabled true
@@ -436,6 +436,19 @@ net faces-9-active <= ksm-belt.fi-1.st-9.out
 # cleaners
 ###########################################################
 
+net cleaners-0-pers-pos => ksm-belt.fi-1.st-10.position
+net cleaners-0-pers-on => ksm-belt.fi-1.st-10.on-offset
+net cleaners-0-pers-off => ksm-belt.fi-1.st-10.off-offset
+net cleaners-0-pers-whm-secs => ksm-belt.fi-1.st-10.whm-secs
+net cleaners-0-ena => ksm-belt.fi-1.st-10.enabled
+net cleaners-0-manu => ksm-belt.fi-1.st-10.manu
+net cleaners-0-active <= ksm-belt.fi-1.st-10.out
+net cleaners-0-mat-height <= ksm-belt.fi-1.st-10.height
+
+net cleaners-0-pers-pos => ksm-belt.fi-0.pr-1.position
+net cleaners-0-overwrite-ena => ksm-belt.fi-0.pr-1.enable
+net cleaners-0-calib-height => ksm-belt.fi-0.pr-1.value
+
 net ctrl-voltage		=> clean-0.ctrl-voltage
 net automatic-running		<= clean-0.automatic-running
 net cleaners-0-error		=> clean-0.error
@@ -455,13 +468,10 @@ net cleaners-0-req-calib	=> clean-0.req-calib
 net cleaners-0-is-clean		<= clean-0.is-clean
 net cleaners-0-is-calib		<= clean-0.is-calib
 
-net cleaners-0-pers-pos => ksm-belt.fi-1.st-10.position
-net cleaners-0-pers-on => ksm-belt.fi-1.st-10.on-offset
-net cleaners-0-pers-off => ksm-belt.fi-1.st-10.off-offset
-net cleaners-0-pers-whm-secs => ksm-belt.fi-1.st-10.whm-secs
-net cleaners-0-ena => ksm-belt.fi-1.st-10.enabled
-net cleaners-0-manu => ksm-belt.fi-1.st-10.manu
-net cleaners-0-active <= ksm-belt.fi-1.st-10.out
+setp clean-0.height-delta-max [CLEAN_0]HEIGHT_DELTA_MAX
+net cleaners-0-mat-height	=> clean-0.mat-height
+net cleaners-0-calib-height	=> clean-0.calib-height
+net cleaners-0-overwrite-ena	<= clean-0.overwrite-ena
 
 net cleaners-1-pers-pos => ksm-belt.fi-1.st-11.position
 net cleaners-1-pers-on => ksm-belt.fi-1.st-11.on-offset
@@ -596,17 +606,17 @@ net bevel-1-mat-height <= ksm-belt.fi-1.st-21.height
 # material probing
 ###########################################################
 
-setp ksm-belt.fi-0.probe-delay [MATPROBE]DELAY_MS
-setp ksm-belt.fi-0.probe-offset [MATPROBE]OFFSET
-setp ksm-belt.fi-1.probe-delay [MATPROBE]DELAY_MS
-setp ksm-belt.fi-1.probe-offset [MATPROBE]OFFSET
+setp ksm-belt.fi-0.pr-0.delay [MATPROBE]DELAY_MS
+setp ksm-belt.fi-0.pr-0.offset [MATPROBE]OFFSET
+setp ksm-belt.fi-1.pr-0.delay [MATPROBE]DELAY_MS
+setp ksm-belt.fi-1.pr-0.offset [MATPROBE]OFFSET
 
 # material probe is done on roll 1
-net rolls-1-active => ksm-belt.fi-0.probe-enable
-net matprobe-raw => ksm-belt.fi-0.probe-value
-net matprobe-pos <= ksm-belt.fi-0.probe-height
-net rolls-1-active => ksm-belt.fi-1.probe-enable
-net matprobe-raw => ksm-belt.fi-1.probe-value
+net rolls-1-active => ksm-belt.fi-0.pr-0.enable
+net matprobe-raw => ksm-belt.fi-0.pr-0.value
+net matprobe-pos <= ksm-belt.fi-0.pr-0.height
+net rolls-1-active => ksm-belt.fi-1.pr-0.enable
+net matprobe-raw => ksm-belt.fi-1.pr-0.value
 
 ###########################################################
 # water control

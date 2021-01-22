@@ -18,7 +18,7 @@ loadrt lcec
 
 # Realtime PLC Komponenten
 loadrt ksm_main
-loadrt ksm_belt belt_length=[BELT]LENGTH bucket_count=[BELT]FIFO_BUCKETS station_count=[BELT]STATION_COUNT_TOP,[BELT]STATION_COUNT_SIDE
+loadrt ksm_belt belt_length=[BELT]LENGTH bucket_count=[BELT]FIFO_BUCKETS probe_count=2,1 station_count=[BELT]STATION_COUNT_TOP,[BELT]STATION_COUNT_SIDE
 
 loadrt ksm_inlet names=inlet
 

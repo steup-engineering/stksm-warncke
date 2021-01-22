@@ -79,6 +79,7 @@
     <halJsonArray name="cleanersMode" size="1">
       <halJsonPin name="clean" type="bit" dir="out"/>
       <halJsonPin name="calib" type="bit" dir="out"/>
+      <halJsonPin name="calibHeight" type="float" dir="out"/>
     </halJsonArray>
     <halJsonArray name="unidevs" size="1">
       <halJsonPin name="manu" type="bit" dir="out"/>
