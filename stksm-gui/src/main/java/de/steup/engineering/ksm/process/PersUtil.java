@@ -156,6 +156,7 @@ public class PersUtil {
         unidevsPersToPlc(process.getUnidevs(), plcData.getUnidevs());
         bevelsPersToPlc(process.getBevels(), plcData.getBevels());
         plcData.setParamSetName(process.getParamSetName());
+        plcData.getCleanersMode()[0].setCalibHeight(process.getCalibHeight());
     }
 
     public void saveProcess(Window owner, GuiInMain plcData, File file) {
@@ -166,6 +167,7 @@ public class PersUtil {
         process.setUnidevs(unidevsPlcToPers(plcData.getUnidevs()));
         process.setBevels(bevelsPlcToPers(plcData.getBevels()));
         process.setParamSetName(plcData.getParamSetName());
+        process.setCalibHeight(plcData.getCleanersMode()[0].getCalibHeight());
         saveProcess(owner, process, file);
     }
 }

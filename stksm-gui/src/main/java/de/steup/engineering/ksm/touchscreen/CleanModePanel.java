@@ -4,16 +4,27 @@
  */
 package de.steup.engineering.ksm.touchscreen;
 
+import de.steup.engineering.ksm.plc.entities.GuiInCleanerMode;
 import de.steup.engineering.ksm.touchscreen.util.CaptionChangeListener;
-import de.steup.engineering.ksm.plc.entities.GuiCleanerMode;
+import de.steup.engineering.ksm.plc.entities.GuiOutCleanerMode;
 import de.steup.engineering.ksm.plc.rest.MachineThread;
 import de.steup.engineering.ksm.plc.entities.GuiInMain;
+import de.steup.engineering.ksm.touchscreen.dialogs.FloatMouseListener;
+import de.steup.engineering.ksm.touchscreen.dialogs.FloatSetter;
 import de.steup.engineering.ksm.touchscreen.util.MachButtonListener;
 import de.steup.engineering.ksm.touchscreen.util.MotorData;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Window;
+import java.text.DecimalFormat;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
@@ -25,8 +36,13 @@ public class CleanModePanel extends JPanel implements UpdatePanelInterface, Capt
 
     private static final long serialVersionUID = -2052546243588241937L;
 
+    private static final DecimalFormat HEIGHT_FORMAT = new DecimalFormat("#0.0");
+    private static final int TEXT_FIELD_COLUMNS = 10;
+
     private final MotorData motor;
+    private final GuiInCleanerMode guiInMode;
     private final TitledBorder border;
+    private final JTextField calibHeight;
 
     private interface StateInterface {
 
@@ -35,10 +51,12 @@ public class CleanModePanel extends JPanel implements UpdatePanelInterface, Capt
         public void setState(boolean state);
     }
 
-    public CleanModePanel(final MotorData motor, final GuiCleanerMode currentMode, final GuiCleanerMode requestMode) {
+    public CleanModePanel(Window owner, final MotorData motor, final GuiOutCleanerMode guiOutMode, final GuiInCleanerMode guiInMode) {
         super();
 
         this.motor = motor;
+        this.guiInMode = guiInMode;
+
         this.border = new TitledBorder(buildCaption());
 
         motor.addCaptionChangeListener(this);
@@ -53,26 +71,60 @@ public class CleanModePanel extends JPanel implements UpdatePanelInterface, Capt
         add(createButton("Cleanen (schleifen)", new StateInterface() {
             @Override
             public boolean getState() {
-                return currentMode.isClean();
+                return guiOutMode.isClean();
             }
 
             @Override
             public void setState(boolean state) {
-                requestMode.setClean(state);
+                guiInMode.setClean(state);
             }
         }));
 
         add(createButton("Kalibrieren (fräsen)", new StateInterface() {
             @Override
             public boolean getState() {
-                return currentMode.isCalib();
+                return guiOutMode.isCalib();
             }
 
             @Override
             public void setState(boolean state) {
-                requestMode.setCalib(state);
+                guiInMode.setCalib(state);
             }
         }));
+
+        JPanel paramPanel = new JPanel();
+
+        GridBagLayout paramLayout = new GridBagLayout();
+        paramPanel.setLayout(paramLayout);
+
+        GridBagConstraints labelConst = new GridBagConstraints();
+        labelConst.anchor = GridBagConstraints.LINE_START;
+        labelConst.fill = GridBagConstraints.HORIZONTAL;
+        labelConst.gridx = 0;
+        labelConst.gridy = 0;
+
+        GridBagConstraints textConst = new GridBagConstraints();
+        textConst.anchor = GridBagConstraints.LINE_END;
+        textConst.fill = GridBagConstraints.HORIZONTAL;
+        textConst.gridx = 1;
+        textConst.gridy = 0;
+
+        FloatSetter calibHeightSetter = new FloatSetter() {
+
+            @Override
+            public void setValue(double value) {
+
+                GuiInMain guiInData = MachineThread.getInstance().getGuiInData();
+                synchronized (guiInData) {
+                    guiInMode.setCalibHeight(value);
+                }
+            }
+        };
+        calibHeight = addParamItem(owner, paramPanel, labelConst, textConst, "Höhe Kalibrierer [mm]", 0.0, 100.0, 0.0, HEIGHT_FORMAT, calibHeightSetter);
+
+        paramPanel.setBorder(BorderFactory.createEtchedBorder());
+        add(paramPanel);
+
     }
 
     private String buildCaption() {
@@ -113,11 +165,30 @@ public class CleanModePanel extends JPanel implements UpdatePanelInterface, Capt
         return nb;
     }
 
+    private JTextField addParamItem(Window owner, JPanel panel, GridBagConstraints labelConst, GridBagConstraints textConst, String labelText, double min, double max, double deflt, DecimalFormat format, FloatSetter setter) {
+        JLabel label = new JLabel(labelText + ": ");
+        label.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(label, labelConst);
+        labelConst.gridy++;
+
+        final JTextField textField = new JTextField(TEXT_FIELD_COLUMNS);
+        textField.setEditable(false);
+        textField.setBackground(Color.WHITE);
+        textField.setText(format.format(deflt));
+        textField.addMouseListener(new FloatMouseListener(owner, labelText, textField, min, max, format, setter));
+        panel.add(textField, textConst);
+        textConst.gridy++;
+
+        return textField;
+    }
+
     @Override
     public void update() {
         GuiInMain guiInData = MachineThread.getInstance().getGuiInData();
         synchronized (guiInData) {
             updateCaption();
+
+            calibHeight.setText(HEIGHT_FORMAT.format(guiInMode.getCalibHeight()));
         }
     }
 

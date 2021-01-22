@@ -24,6 +24,8 @@ public class PersMainEnt implements Serializable {
 
     @XmlAttribute(name = "beltFeed")
     private double beltFeed;
+    @XmlAttribute(name = "calibHeight")
+    private double calibHeight;
     @XmlElement(name = "face")
     private ArrayList<PersMotorEnt> faces;
     @XmlElement(name = "cleaner")
@@ -41,6 +43,14 @@ public class PersMainEnt implements Serializable {
 
     public void setBeltFeed(double beltFeed) {
         this.beltFeed = beltFeed;
+    }
+
+    public double getCalibHeight() {
+        return calibHeight;
+    }
+
+    public void setCalibHeight(double calibHeight) {
+        this.calibHeight = calibHeight;
     }
 
     public ArrayList<PersBevelEnt> getBevels() {

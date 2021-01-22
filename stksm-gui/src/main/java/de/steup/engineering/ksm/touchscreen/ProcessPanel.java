@@ -101,6 +101,7 @@ public class ProcessPanel extends JPanel implements UpdatePanelInterface {
         infoPanel.setLayout(new GridLayout(0, 1));
 
         CleanModePanel cmp = new CleanModePanel(
+                owner,
                 cleanerMotors[0],
                 guiOutData.getCleanersMode()[0],
                 guiInData.getCleanersMode()[0]);

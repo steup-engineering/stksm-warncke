@@ -8,29 +8,11 @@ package de.steup.engineering.ksm.plc.entities;
  *
  * @author sascha
  */
-public class GuiCleanerMode {
+public class GuiInCleanerMode {
 
     private boolean clean;
     private boolean calib;
-
-    public static void update(GuiCleanerMode[] dst, GuiCleanerMode[] src) {
-        if (src == null) {
-            return;
-        }
-
-        for (int i = 0; i < Math.min(src.length, dst.length); i++) {
-            dst[i].update(src[i]);
-        }
-    }
-
-    public void update(GuiCleanerMode src) {
-        if (src == null) {
-            return;
-        }
-
-        clean = src.clean;
-        calib = src.calib;
-    }
+    private double calibHeight;
 
     public boolean isClean() {
         return clean;
@@ -46,6 +28,14 @@ public class GuiCleanerMode {
 
     public void setCalib(boolean calib) {
         this.calib = calib;
+    }
+
+    public double getCalibHeight() {
+        return calibHeight;
+    }
+
+    public void setCalibHeight(double calibHeight) {
+        this.calibHeight = calibHeight;
     }
 
 }

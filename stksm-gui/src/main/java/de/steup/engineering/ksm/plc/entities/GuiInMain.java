@@ -24,7 +24,7 @@ public class GuiInMain {
     private final GuiInStation faces[] = new GuiInStation[Main.FACE_COUNT];
     private final GuiInStation rolls[] = new GuiInStation[Main.ROLLS_COUNT];
     private final GuiInStation cleaners[] = new GuiInStation[Main.CLEANER_COUNT];
-    private final GuiCleanerMode cleanersMode[] = new GuiCleanerMode[Main.CLEANER_MODE_COUNT];
+    private final GuiInCleanerMode cleanersMode[] = new GuiInCleanerMode[Main.CLEANER_MODE_COUNT];
     private final GuiInUnidev unidevs[] = new GuiInUnidev[Main.UNIDEV_COUNT];
     private final GuiInBevel bevels[] = new GuiInBevel[Main.BEVEL_COUNT];
 
@@ -39,7 +39,7 @@ public class GuiInMain {
             cleaners[i] = new GuiInStation();
         }
         for (int i = 0; i < Main.CLEANER_MODE_COUNT; i++) {
-            cleanersMode[i] = new GuiCleanerMode();
+            cleanersMode[i] = new GuiInCleanerMode();
         }
         for (int i = 0; i < Main.UNIDEV_COUNT; i++) {
             unidevs[i] = new GuiInUnidev();
@@ -97,7 +97,7 @@ public class GuiInMain {
         return cleaners;
     }
 
-    public GuiCleanerMode[] getCleanersMode() {
+    public GuiInCleanerMode[] getCleanersMode() {
         return cleanersMode;
     }
 

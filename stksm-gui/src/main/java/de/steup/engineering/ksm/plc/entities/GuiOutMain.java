@@ -31,7 +31,7 @@ public class GuiOutMain {
     private final GuiOutWhmStation faces[] = new GuiOutWhmStation[Main.FACE_COUNT];
     private final GuiOutStation rolls[] = new GuiOutStation[Main.ROLLS_COUNT];
     private final GuiOutWhmStation cleaners[] = new GuiOutWhmStation[Main.CLEANER_COUNT];
-    private final GuiCleanerMode cleanersMode[] = new GuiCleanerMode[Main.CLEANER_MODE_COUNT];
+    private final GuiOutCleanerMode cleanersMode[] = new GuiOutCleanerMode[Main.CLEANER_MODE_COUNT];
     private final GuiOutUnidev unidevs[] = new GuiOutUnidev[Main.UNIDEV_COUNT];
     private final GuiOutBevel bevels[] = new GuiOutBevel[Main.BEVEL_COUNT];
     private final GuiOutWhm whm;
@@ -48,7 +48,7 @@ public class GuiOutMain {
             cleaners[i] = new GuiOutWhmStation();
         }
         for (int i = 0; i < Main.CLEANER_MODE_COUNT; i++) {
-            cleanersMode[i] = new GuiCleanerMode();
+            cleanersMode[i] = new GuiOutCleanerMode();
         }
         for (int i = 0; i < Main.UNIDEV_COUNT; i++) {
             unidevs[i] = new GuiOutUnidev();
@@ -73,7 +73,7 @@ public class GuiOutMain {
         GuiOutWhmStation.update(faces, src.faces);
         GuiOutStation.update(rolls, src.rolls);
         GuiOutWhmStation.update(cleaners, src.cleaners);
-        GuiCleanerMode.update(cleanersMode, src.cleanersMode);
+        GuiOutCleanerMode.update(cleanersMode, src.cleanersMode);
         GuiOutUnidev.update(unidevs, src.unidevs);
         GuiOutBevel.update(bevels, src.bevels);
 
@@ -105,7 +105,7 @@ public class GuiOutMain {
         return cleaners;
     }
 
-    public GuiCleanerMode[] getCleanersMode() {
+    public GuiOutCleanerMode[] getCleanersMode() {
         return cleanersMode;
     }
 
