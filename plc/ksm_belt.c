@@ -14,12 +14,34 @@ MODULE_LICENSE("GPL");
 
 static int belt_length;
 static int bucket_count;
+static int probe_count[MAX_FIFO_COUNT];
 static int station_count[MAX_FIFO_COUNT];
 RTAPI_MP_INT(belt_length, "belt length in mm");
 RTAPI_MP_INT(bucket_count, "number of bucket entries per fifo");
+RTAPI_MP_ARRAY_INT(probe_count, MAX_FIFO_COUNT, "number probes for each fifo");
 RTAPI_MP_ARRAY_INT(station_count, MAX_FIFO_COUNT, "number stations for each fifo");
 
 static int fifo_count;
+
+typedef struct {
+	int index;
+
+	// params
+	hal_float_t *position;
+	hal_float_t *offset;
+	hal_u32_t *delay;
+
+	// inputs
+	hal_bit_t *enable;
+	hal_float_t *value;
+
+	// outputs
+	hal_float_t *height;
+
+	// variables
+	bool enable_old;
+	long long delay_timer;
+} probe_data_t;
 
 typedef struct {
 	int index;
@@ -57,28 +79,20 @@ typedef struct {
 typedef struct {
 	int index;
 
+	probe_data_t *probes;
 	station_data_t *stations;
 	double *buckets;
-
-	// params
-	hal_float_t *probe_position;
-	hal_float_t *probe_offset;
-	hal_u32_t *probe_delay;
 
 	// inputs
 	hal_bit_t *enabled;
 	hal_bit_t *material_switch;
-	hal_bit_t *probe_enable;
-	hal_float_t *probe_value;
 
 	// outputs
 	hal_bit_t *has_material;
-	hal_float_t *probe_height;
 
 	// variables
+	int probe_count;
 	int station_count;
-	bool probe_enable_old;
-	long long probe_delay_timer;
 } fifo_data_t;
 
 typedef struct {
@@ -145,10 +159,12 @@ static int comp_id;
 
 static void update(void *arg, long period);
 static void update_fifo(belt_data_t *belt, fifo_data_t *fifo, long period);
+static void update_probe(belt_data_t *belt, fifo_data_t *fifo, probe_data_t *station, long period);
 static void update_station(belt_data_t *belt, fifo_data_t *fifo, station_data_t *station, long period);
 
 static int export_belt(belt_data_t *data);
 static int export_fifo(fifo_data_t *data, int index);
+static int export_probe(probe_data_t *data, int fifo_index, int index);
 static int export_station(station_data_t *data, int fifo_index, int index);
 
 int rtapi_app_main(void)
@@ -159,6 +175,8 @@ int rtapi_app_main(void)
 	int fifo_idx;
 	station_data_t *station;
 	int station_idx;
+	probe_data_t *probe;
+	int probe_idx;
 
 	// count fifos
 	for (fifo_count = 0; fifo_count <= MAX_FIFO_COUNT; fifo_count++) {
@@ -215,6 +233,7 @@ int rtapi_app_main(void)
 
 	// initialize fifos
 	for (fifo_idx = 0, fifo = belt->fifos; fifo_idx < fifo_count; fifo_idx++, fifo++) {
+		fifo->probe_count = probe_count[fifo_idx];
 		fifo->station_count = station_count[fifo_idx];
 
 		// export and initialize fifo
@@ -222,6 +241,24 @@ int rtapi_app_main(void)
 		if (retval != 0) {
 			rtapi_print_msg(RTAPI_MSG_ERR, "KSM_BELT: ERROR: fifo %d export failed (error %d)\n", fifo_idx, retval);
 			goto fail1;
+		}
+
+		// alloc probes hal data
+		if (fifo->probe_count > 0) {
+			fifo->probes = hal_malloc(fifo->probe_count * sizeof(probe_data_t));
+			if (fifo->probes == NULL) {
+				rtapi_print_msg(RTAPI_MSG_ERR, "KSM_BELT: ERROR: hal_malloc() for fifo probes failed\n");
+				goto fail1;
+			}
+		}
+
+		// export and initialize probes
+		for (probe_idx = 0, probe = fifo->probes; probe_idx < fifo->probe_count; probe_idx++, probe++) {
+			retval = export_probe(probe, fifo_idx, probe_idx);
+			if (retval != 0) {
+				rtapi_print_msg(RTAPI_MSG_ERR, "KSM_BELT: ERROR: probe %d.%d export failed (error %d)\n", fifo_idx, probe_idx, retval);
+				goto fail1;
+			}
 		}
 
 		// alloc stations hal data
@@ -464,28 +501,44 @@ static void update(void *arg, long period)
 static void update_fifo(belt_data_t *belt, fifo_data_t *fifo, long period)
 {
 	int i;
+	probe_data_t *probe;
 	station_data_t *station;
+
+	// process probes
+	for (i = 0, probe = fifo->probes; i < fifo->probe_count; i++, probe++) {
+		update_probe(belt, fifo, probe, period);
+	}
+
+	// process stations
+	for (i = 0, station = fifo->stations; i < fifo->station_count; i++, station++) {
+		update_station(belt, fifo, station, period);
+	}
+}
+
+static void update_probe(belt_data_t *belt, fifo_data_t *fifo, probe_data_t *probe, long period)
+{
+	int i;
 	int32_t pos;
 	double val;
-	bool probe_enable;
+	bool enable;
 
 	// handle probe delay
-	probe_enable = 0;
-	if (*(fifo->probe_enable)) {
-		if (fifo->probe_delay_timer > 0) {
-			fifo->probe_delay_timer -= period;
+	enable = 0;
+	if (*(probe->enable)) {
+		if (probe->delay_timer > 0) {
+			probe->delay_timer -= period;
 		} else {
-			probe_enable = 1;
+			enable = 1;
 		}
 	} else {
-		fifo->probe_delay_timer = *(fifo->probe_offset) * 10000000LL;
+		probe->delay_timer = *(probe->delay) * 1000000LL;
 	}
 
 	// fill in measured values (only process forward move)
-	pos = bucket_inc(*(belt->bucket_pos), (int32_t) -(*(fifo->probe_position) * belt->buckets_per_mm));
-	val = *(fifo->probe_value) + *(fifo->probe_offset);
-	if (probe_enable) {
-		if (fifo->probe_enable_old) {
+	pos = bucket_inc(*(belt->bucket_pos), (int32_t) -(*(probe->position) * belt->buckets_per_mm));
+	val = *(probe->value) + *(probe->offset);
+	if (enable) {
+		if (probe->enable_old) {
 			for (i = 0; i < *(belt->bucket_diff); i++, pos = bucket_inc(pos, -1)) {
 				if (fifo->buckets[pos] > 0.0) {
 					fifo->buckets[pos] = val;
@@ -496,22 +549,18 @@ static void update_fifo(belt_data_t *belt, fifo_data_t *fifo, long period)
 				fifo->buckets[pos] = val;
 			}
 		}
-		fifo->probe_enable_old = 1;
-		*(fifo->probe_height) = val;
+		probe->enable_old = 1;
+		*(probe->height) = val;
 	} else {
-		if (fifo->probe_enable_old) {
+		if (probe->enable_old) {
 			for (i = 0; i < bucket_count && fifo->buckets[pos] > 0.0; i++, pos = bucket_inc(pos, +1)) {
 				fifo->buckets[pos] = val;
 			}
 		}
-		fifo->probe_enable_old = 0;
-		*(fifo->probe_height) = 0.0;
+		probe->enable_old = 0;
+		*(probe->height) = 0.0;
 	}
 
-	// process stations
-	for (i = 0, station = fifo->stations; i < fifo->station_count; i++, station++) {
-		update_station(belt, fifo, station, period);
-	}
 }
 
 static void update_station(belt_data_t *belt, fifo_data_t *fifo, station_data_t *station, long period)
@@ -758,43 +807,56 @@ static int export_fifo(fifo_data_t *data, int index)
 {
 	int retval;
 
-	// export parameters
-	retval = hal_pin_float_newf(HAL_IO, &(data->probe_position), comp_id, "ksm-belt.fi-%d.probe-position", index);
-	if (retval != 0) { return retval; }
-	retval = hal_pin_float_newf(HAL_IO, &(data->probe_offset), comp_id, "ksm-belt.fi-%d.probe-offset", index);
-	if (retval != 0) { return retval; }
-	retval = hal_pin_u32_newf(HAL_IO, &(data->probe_delay), comp_id, "ksm-belt.fi-%d.probe-delay", index);
-	if (retval != 0) { return retval; }
-
 	// export pins
 	retval = hal_pin_bit_newf(HAL_IN, &(data->enabled), comp_id, "ksm-belt.fi-%d.enabled", index);
 	if (retval != 0) { return retval; }
 	retval = hal_pin_bit_newf(HAL_IN, &(data->material_switch), comp_id, "ksm-belt.fi-%d.material-switch", index);
-	if (retval != 0) { return retval; }
-	retval = hal_pin_bit_newf(HAL_IN, &(data->probe_enable), comp_id, "ksm-belt.fi-%d.probe-enable", index);
-	if (retval != 0) { return retval; }
-	retval = hal_pin_float_newf(HAL_IN, &(data->probe_value), comp_id, "ksm-belt.fi-%d.probe-value", index);
-	if (retval != 0) { return retval; }
-	retval = hal_pin_float_newf(HAL_OUT, &(data->probe_height), comp_id, "ksm-belt.fi-%d.probe-height", index);
 	if (retval != 0) { return retval; }
 	retval = hal_pin_bit_newf(HAL_OUT, &(data->has_material), comp_id, "ksm-belt.fi-%d.has-material", index);
 	if (retval != 0) { return retval; }
 
 	// initialize data
 	data->index = index;
-	data->probe_enable_old = 0;
-	data->probe_delay_timer = 0;
-
-	*(data->probe_position) = 0.0;
-	*(data->probe_offset) = 0.0;
-	*(data->probe_delay) = 0.0;
 
 	*(data->enabled) = 0;
 	*(data->material_switch) = 0;
-	*(data->probe_enable) = 0;
-	*(data->probe_value) = 0.0;
-	*(data->probe_height) = 0.0;
 	*(data->has_material) = 0;
+
+	return 0;
+}
+
+static int export_probe(probe_data_t *data, int fifo_index, int index)
+{
+	int retval;
+
+	// export parameters
+	retval = hal_pin_float_newf(HAL_IO, &(data->position), comp_id, "ksm-belt.fi-%d.pr-%d.position", fifo_index, index);
+	if (retval != 0) { return retval; }
+	retval = hal_pin_float_newf(HAL_IO, &(data->offset), comp_id, "ksm-belt.fi-%d.pr-%d.offset", fifo_index, index);
+	if (retval != 0) { return retval; }
+	retval = hal_pin_u32_newf(HAL_IO, &(data->delay), comp_id, "ksm-belt.fi-%d.pr-%d.delay", fifo_index, index);
+	if (retval != 0) { return retval; }
+
+	// export pins
+	retval = hal_pin_bit_newf(HAL_IN, &(data->enable), comp_id, "ksm-belt.fi-%d.pr-%d.enable", fifo_index, index);
+	if (retval != 0) { return retval; }
+	retval = hal_pin_float_newf(HAL_IN, &(data->value), comp_id, "ksm-belt.fi-%d.pr-%d.value", fifo_index, index);
+	if (retval != 0) { return retval; }
+	retval = hal_pin_float_newf(HAL_OUT, &(data->height), comp_id, "ksm-belt.fi-%d.pr-%d.height", fifo_index, index);
+	if (retval != 0) { return retval; }
+
+	// initialize data
+	data->index = index;
+	data->enable_old = 0;
+	data->delay_timer = 0;
+
+	*(data->position) = 0.0;
+	*(data->offset) = 0.0;
+	*(data->delay) = 0;
+
+	*(data->enable) = 0;
+	*(data->value) = 0.0;
+	*(data->height) = 0.0;
 
 	return 0;
 }
