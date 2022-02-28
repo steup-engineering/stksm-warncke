@@ -530,11 +530,11 @@ net unidevs-0-error <= unidev-0.error
 net unidevs-0-req => unidev-0.in
 net unidevs-0-active <= unidev-0.out
 
-setp unidev-0.motor-offset [UNIDEV_0]MOTOR_OFFSET
-net unidevs-0-pers-on => unidev-0.on-offset
-net unidevs-0-pers-off => unidev-0.off-offset
-net unidevs-0-motor-on <= unidev-0.motor-on-offset
-net unidevs-0-motor-off <= unidev-0.motor-off-offset
+setp unidev-0-motor.motor-offset [UNIDEV_0]MOTOR_OFFSET
+net unidevs-0-pers-on => unidev-0-motor.on-offset
+net unidevs-0-pers-off => unidev-0-motor.off-offset
+net unidevs-0-motor-on <= unidev-0-motor.motor-on-offset
+net unidevs-0-motor-off <= unidev-0-motor.motor-off-offset
 
 ###########################################################
 # station control

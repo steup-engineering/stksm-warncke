@@ -22,6 +22,7 @@ loadrt ksm_belt belt_length=[BELT]LENGTH bucket_count=[BELT]FIFO_BUCKETS probe_c
 
 loadrt ksm_inlet names=inlet
 
+loadrt ksm_motoroffset names=unidev-0-motor
 loadrt ksm_clean names=clean-0
 loadrt ksm_unidev names=unidev-0
 
@@ -47,6 +48,7 @@ addf inlet servo-thread
 
 addf clean-0 servo-thread
 
+addf unidev-0-motor servo-thread
 addf unidev-0 servo-thread
 
 addf bevel-0 servo-thread

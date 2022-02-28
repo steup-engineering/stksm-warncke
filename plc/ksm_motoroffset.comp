@@ -1,0 +1,28 @@
+component ksm_motoroffset "KSM motor offset";
+
+author "Sascha Ittner, Dominik Braun";
+license "GPL";
+
+param rw float motor_offset = 0.0;
+pin in float on_offset;
+pin in float off_offset;
+pin io float motor_on_offset;
+pin io float motor_off_offset;
+
+function _ fp;
+
+;;
+
+FUNCTION(_) {
+  // ensure motor is running if material is seen in the specified area
+  if ((0.0 - on_offset) <= (0.0 + off_offset)) {
+    motor_on_offset = on_offset;
+    motor_off_offset = off_offset;
+  } else {
+    motor_on_offset = -off_offset;
+    motor_off_offset = -on_offset;
+  }
+  motor_on_offset += motor_offset;
+  motor_off_offset += motor_offset;
+}
+
