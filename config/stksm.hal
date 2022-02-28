@@ -10,8 +10,8 @@
 # Setup
 ###########################################################
 
-loadrt trivkins
-loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[TRAJ]AXES
+loadrt [KINS]KINEMATICS
+loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JOINTS
 
 loadusr -W lcec_conf ethercat-conf.xml
 loadrt lcec
