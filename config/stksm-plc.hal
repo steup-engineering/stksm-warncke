@@ -445,9 +445,9 @@ net cleaners-0-manu => ksm-belt.fi-1.st-10.manu
 net cleaners-0-active <= ksm-belt.fi-1.st-10.out
 net cleaners-0-mat-height <= ksm-belt.fi-1.st-10.height
 
-net cleaners-0-pers-pos => ksm-belt.fi-0.pr-1.position
-net cleaners-0-overwrite-ena => ksm-belt.fi-0.pr-1.enable
-net cleaners-0-calib-height => ksm-belt.fi-0.pr-1.value
+net cleaners-0-pers-pos => ksm-belt.fi-1.pr-1.position
+net cleaners-0-overwrite-ena => ksm-belt.fi-1.pr-1.enable
+net cleaners-0-calib-height => ksm-belt.fi-1.pr-1.value
 
 net ctrl-voltage		=> clean-0.ctrl-voltage
 net automatic-running		<= clean-0.automatic-running
