@@ -473,6 +473,20 @@ net cleaners-0-mat-height	=> clean-0.mat-height
 net cleaners-0-calib-height	=> clean-0.calib-height
 net cleaners-0-overwrite-ena	<= clean-0.overwrite-ena
 
+# use separate station for motor control
+net cleaners-0-pers-pos => ksm-belt.fi-1.st-25.position
+net cleaners-0-motor-on => ksm-belt.fi-1.st-25.on-offset
+net cleaners-0-motor-off => ksm-belt.fi-1.st-25.off-offset
+net cleaners-0-ena => ksm-belt.fi-1.st-25.enabled
+net cleaners-0-manu => ksm-belt.fi-1.st-25.manu
+net cleaners-0-motor <= ksm-belt.fi-1.st-25.out
+
+setp cleaner-0-motor.motor-offset [CLEAN_0]MOTOR_OFFSET
+net cleaners-0-pers-on => cleaner-0-motor.on-offset
+net cleaners-0-pers-off => cleaner-0-motor.off-offset
+net cleaners-0-motor-on <= cleaner-0-motor.motor-on-offset
+net cleaners-0-motor-off <= cleaner-0-motor.motor-off-offset
+
 net cleaners-1-pers-pos => ksm-belt.fi-1.st-11.position
 net cleaners-1-pers-on => ksm-belt.fi-1.st-11.on-offset
 net cleaners-1-pers-off => ksm-belt.fi-1.st-11.off-offset
@@ -481,6 +495,20 @@ net cleaners-1-ena => ksm-belt.fi-1.st-11.enabled
 net cleaners-1-manu => ksm-belt.fi-1.st-11.manu
 net cleaners-1-active <= ksm-belt.fi-1.st-11.out
 
+# use separate station for motor control
+net cleaners-1-pers-pos => ksm-belt.fi-1.st-26.position
+net cleaners-1-motor-on => ksm-belt.fi-1.st-26.on-offset
+net cleaners-1-motor-off => ksm-belt.fi-1.st-26.off-offset
+net cleaners-1-ena => ksm-belt.fi-1.st-26.enabled
+net cleaners-1-manu => ksm-belt.fi-1.st-26.manu
+net cleaners-1-motor <= ksm-belt.fi-1.st-26.out
+
+setp cleaner-1-motor.motor-offset [CLEAN_1]MOTOR_OFFSET
+net cleaners-1-pers-on => cleaner-1-motor.on-offset
+net cleaners-1-pers-off => cleaner-1-motor.off-offset
+net cleaners-1-motor-on <= cleaner-1-motor.motor-on-offset
+net cleaners-1-motor-off <= cleaner-1-motor.motor-off-offset
+
 net cleaners-2-pers-pos => ksm-belt.fi-1.st-12.position
 net cleaners-2-pers-on => ksm-belt.fi-1.st-12.on-offset
 net cleaners-2-pers-off => ksm-belt.fi-1.st-12.off-offset
@@ -488,6 +516,20 @@ net cleaners-2-pers-whm-secs => ksm-belt.fi-1.st-12.whm-secs
 net cleaners-2-ena => ksm-belt.fi-1.st-12.enabled
 net cleaners-2-manu => ksm-belt.fi-1.st-12.manu
 net cleaners-2-active <= ksm-belt.fi-1.st-12.out
+
+# use separate station for motor control
+net cleaners-2-pers-pos => ksm-belt.fi-1.st-27.position
+net cleaners-2-motor-on => ksm-belt.fi-1.st-27.on-offset
+net cleaners-2-motor-off => ksm-belt.fi-1.st-27.off-offset
+net cleaners-2-ena => ksm-belt.fi-1.st-27.enabled
+net cleaners-2-manu => ksm-belt.fi-1.st-27.manu
+net cleaners-2-motor <= ksm-belt.fi-1.st-27.out
+
+setp cleaner-2-motor.motor-offset [CLEAN_2]MOTOR_OFFSET
+net cleaners-2-pers-on => cleaner-2-motor.on-offset
+net cleaners-2-pers-off => cleaner-2-motor.off-offset
+net cleaners-2-motor-on <= cleaner-2-motor.motor-on-offset
+net cleaners-2-motor-off <= cleaner-2-motor.motor-off-offset
 
 ###########################################################
 # unidevs
